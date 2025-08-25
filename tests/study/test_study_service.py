@@ -5,10 +5,11 @@ from unittest import skip
 
 from tests.base_test import BaseTest
 
-from crc import db, app
+from crc import db, app, session
 from crc.models.study import StudyModel, StudyStatus, StudyAssociatedSchema, CategoryMetadata, StudySchema, \
     CategorySchema, Category
 from crc.models.user import UserModel
+from crc.models.protocol_builder import ProtocolBuilderCreatorStudySchema
 from crc.models.workflow import WorkflowModel, WorkflowStatus, WorkflowSpecCategory, WorkflowSpecCategorySchema
 from crc.services.ldap_service import LdapService
 from crc.services.study_service import StudyService
@@ -234,6 +235,53 @@ class TestStudyService(BaseTest):
         studies = StudyService().get_studies_for_user(user, categories)
         # study_details has an invalid REVIEW_TYPE, so we should get 0 studies back
         self.assertEqual(0, len(studies))
+
+    @patch('crc.services.protocol_builder.ProtocolBuilderService.get_studies')  # mock_studies
+    def test_sync_with_protocol_builder(self, mock_studies):
+        """Test that we update studies when we sync with protocol_builder."""
+        app.config['PB_ENABLED'] = True
+        app.config['PB_MIN_DATE'] = "2020-01-01T00:00:00.000Z"
+
+        # TODO: Something is wonky. Test doesn't fail when using old code, but the new code (study_service:535) does 'fix' the problem.
+
+        with session.no_autoflush:
+            studies_response = self.protocol_builder_response('user_studies.json')
+            mock_studies.return_value = ProtocolBuilderCreatorStudySchema(many=True).loads(studies_response)
+            # self.add_studies()
+
+            api_response = self.app.get('/v1.0/study',
+                                        headers=self.logged_in_headers(),
+                                        content_type="application/json")
+            self.assert_success(api_response)
+            json_data = json.loads(api_response.get_data(as_text=True))
+
+            self.assertEqual(3, len(json_data))  # We should have 3 studies in the response.
+            for study in json_data:
+                if study['id'] == 65432:
+                    self.assertEqual("Peanut butter consumption among quiet dogs", study['title'])
+                else:
+                    assert study['id'] in (1, 54321)
+            db_study = db.session.query(StudyModel).filter_by(id='65432').first()
+            self.assertEqual("Peanut butter consumption among quiet dogs", db_study.title)
+
+            studies_response_modified = self.protocol_builder_response('user_studies_title_modified.json')
+            mock_studies.return_value = ProtocolBuilderCreatorStudySchema(many=True).loads(studies_response_modified)
+
+            modified_api_response = self.app.get('/v1.0/study',
+                                        headers=self.logged_in_headers(),
+                                        content_type="application/json")
+            self.assert_success(modified_api_response)
+            modified_json_data = json.loads(modified_api_response.get_data(as_text=True))
+            self.assertEqual(3, len(modified_json_data))  # We should still have 3 studies in the response.
+            for study in modified_json_data:
+                if study['id'] == 65432:
+                    # The title should have been updated.
+                    self.assertEqual("Peanut butter consumption among quiet dogs, title modified", study['title'])
+                else:
+                    assert study['id'] in (1, 54321)
+            modified_db_study = db.session.query(StudyModel).filter_by(id=65432).first()
+            self.assertEqual("Peanut butter consumption among quiet dogs, title modified", modified_db_study.title)
+
 
     def test_study_associates(self):
         self.create_user_with_study_and_workflow()

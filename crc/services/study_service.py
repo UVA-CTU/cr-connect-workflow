@@ -532,9 +532,9 @@ class StudyService(object):
                                                 event_type=StudyEventType.automatic)
         # we moved session.add here so that it comes after we update the study
         # we only add if it doesn't already exist in the DB
-        if add_study:
-            session.add(db_study)
-            session.commit()
+        # if add_study:
+        session.add(db_study)
+        session.commit()
 
     def __process_pb_studies(self, pb_studies, db_studies, user, specs):
         for pb_study in pb_studies:
