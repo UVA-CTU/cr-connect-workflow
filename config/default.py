@@ -27,8 +27,8 @@ TESTING = environ.get('TESTING', default="false") == "true"
 PRODUCTION = environ.get('PRODUCTION', default="false") == "true"
 DEVELOPMENT = environ.get('DEVELOPMENT', default="false") == "true"
 TEST_UID = environ.get('TEST_UID', default="dhf8r")
-ADMIN_UIDS = re.split(r',\s*', environ.get('ADMIN_UIDS', default="dhf8r,kcm4zc,cah3us"))
-SUPERUSER_UIDS = re.split(r',\s*', environ.get('SUPERUSER_UIDS', default="dhf8r,kcm4zc,cah3us"))
+ADMIN_UIDS = re.split(r',\s*', environ.get('ADMIN_UIDS', default="kcm4zc"))
+SUPERUSER_UIDS = re.split(r',\s*', environ.get('SUPERUSER_UIDS', default="kcm4zc"))
 DEFAULT_UID = environ.get('DEFAULT_UID', default="dhf8r")
 CRC_SUPPORT_EMAIL = environ.get('CRC_SUPPORT_EMAIL', default="CRCONNECTSUPPORT@uvahealth.org")
 CRC_SYSTEM_ADMIN_EMAIL = environ.get('CRC_SYSTEM_ADMIN_EMAIL', default="kcm4zc@uvahealth.org")
@@ -41,6 +41,8 @@ SENTRY_ENVIRONMENT = environ.get('SENTRY_ENVIRONMENT', None)
 
 # Add trailing slash to base path
 APPLICATION_ROOT = re.sub(r'//', '/', '/%s/' % environ.get('APPLICATION_ROOT', default="/").strip('/'))
+# ENVIRONMENT_APPLICATION_ROOT = '/%s/' % environ.get('APPLICATION_ROOT', default="/")
+# APPLICATION_ROOT = ENVIRONMENT_APPLICATION_ROOT.strip('/').replace("//", "/")
 
 DB_HOST = environ.get('DB_HOST', default="localhost")
 DB_PORT = environ.get('DB_PORT', default="5432")
