@@ -26,7 +26,7 @@ class EmailModel(db.Model):
 class EmailDocCodesModel(db.Model):
     __tablename__ = 'email_doc_codes'
     id = db.Column(db.Integer, primary_key=True)
-    email_id = db.Column(db.Integer, db.ForeignKey(EmailModel.id))
+    email_id = db.Column(db.Integer, db.ForeignKey(EmailModel.id), nullable=False)
     doc_code = db.Column(db.String)
 
 
