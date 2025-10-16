@@ -1730,6 +1730,135 @@ paths:
         '200':
           description: Remote code was pulled successfully
 
+  /message/status:
+    get:
+      operationId: crc.api.message.status_message
+      summary: Get the current status message.
+      tags:
+        - Messages
+      responses:
+        '200':
+          description: The current status message, or an empty object if none is set.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: The current status message (may be HTML).
+                    example: "<b>This is a status message</b>"
+  /message/status/up:
+    put:
+      operationId: crc.api.message.status_message_up
+      summary: Set the status message to display.
+      tags:
+        - Messages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The message to display.
+              required:
+                - message
+      responses:
+        '200':
+          description: Status message set successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+  /message/status/down:
+    put:
+      operationId: crc.api.message.status_message_down
+      summary: Turn off the status message.
+      tags:
+        - Messages
+      responses:
+        '200':
+          description: Status message turned off successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+  /message/alternate:
+    get:
+      operationId: crc.api.message.alternate_message
+      summary: Get the current alternate message.
+      tags:
+        - Messages
+      responses:
+        '200':
+          description: The current alternate message, or an empty object if none is set.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: The current alternate message (may be HTML).
+                    example: "<b>This is an alternate message</b>"
+  /message/alternate/up:
+    put:
+      operationId: crc.api.message.alternate_message_up
+      summary: Set the alternate message to display.
+      tags:
+        - Messages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The message to display.
+              required:
+                - message
+      responses:
+        '200':
+          description: Alternate message set successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+  /message/alternate/down:
+    put:
+      operationId: crc.api.message.alternate_message_down
+      summary: Turn off the alternate message.
+      tags:
+        - Messages
+      responses:
+        '200':
+          description: Alternate message turned off successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+
 components:
   securitySchemes:
     jwt:
