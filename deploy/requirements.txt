@@ -22,7 +22,7 @@ commonmark==0.9.1
 configparser==7.1.0
 connexion==2.14.2
 coverage==7.6.10
-cryptography==44.0.0
+cryptography==44.0.1
 dateparser==1.2.0
 deprecated==1.2.18
 docutils==0.21.2
