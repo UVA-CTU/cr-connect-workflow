@@ -99,7 +99,7 @@ tomli==2.2.1
 typing-extensions==4.12.2
 tzdata==2025.1
 tzlocal==5.2
-urllib3==2.3.0
+urllib3==2.5.0
 vine==5.1.0
 waitress==3.0.2
 wcwidth==0.2.13
