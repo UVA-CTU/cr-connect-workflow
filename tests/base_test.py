@@ -14,7 +14,6 @@ from flask import g
 
 from crc import app, db, session
 from crc.models.api_models import WorkflowApiSchema, MultiInstanceType
-from crc.models.issue import IssueModel
 from crc.models.task_event import TaskEventModel, TaskAction
 from crc.models.study import StudyModel, StudyStatus, ProgressStatus
 from crc.models.user import UserModel
