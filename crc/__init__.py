@@ -18,16 +18,18 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 from apscheduler.schedulers.background import BackgroundScheduler
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-def do_config(app):
+
+def do_config(flask_app):
+    """Configure the Flask application."""
     import logging
-    app.config.from_object('config.default')
+    flask_app.config.from_object('config.default')
 
     if "TESTING" in os.environ and os.environ["TESTING"] == "true":
-        app.config.from_pyfile('../config/testing.py')
+        flask_app.config.from_pyfile('../config/testing.py')
         logging.basicConfig(level=logging.INFO)
     else:
-        app.config.root_path = app.instance_path
-        app.config.from_pyfile('config.py', silent=True)
+        flask_app.config.root_path = flask_app.instance_path
+        flask_app.config.from_pyfile('config.py', silent=True)
         from config.logging import logging_config
         logging.config.dictConfig(logging_config)
 
