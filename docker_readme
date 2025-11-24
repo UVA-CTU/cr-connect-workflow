@@ -1,0 +1,6 @@
+You can build the Docker image locally, if you have Docker cli installed.
+Note the "." at the end of the following command:
+
+    docker build .
+
+https://docs.docker.com/get-started/docker-concepts/building-images/build-tag-and-publish-an-image/
