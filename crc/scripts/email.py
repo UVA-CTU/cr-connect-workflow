@@ -167,7 +167,7 @@ email(subject="My Subject", recipients="user@example.com", attachments=[('Study_
         associates = StudyService.get_study_associates(study_id)
         for associate in associates:
             if associate.send_email is True:
-                user_info = LdapService.user_info(associate.uid)
+                user_info = LdapService().user_info(associate.uid)
                 associated_emails.append(user_info.email_address)
         return associated_emails
 

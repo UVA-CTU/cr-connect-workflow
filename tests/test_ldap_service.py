@@ -13,7 +13,7 @@ class TestLdapService(BaseTest):
         pass
 
     def test_get_single_user(self):
-        user_info = LdapService.user_info("lb3dp")
+        user_info = LdapService().user_info("lb3dp")
         self.assertIsNotNone(user_info)
         self.assertEqual("lb3dp", user_info.uid)
         self.assertEqual("Laura Barnes", user_info.display_name)
@@ -27,21 +27,21 @@ class TestLdapService(BaseTest):
 
     def test_find_missing_user(self):
         try:
-            user_info = LdapService.user_info("nosuch")
+            user_info = LdapService().user_info("nosuch")
             self.assertFalse(True, "An API error should be raised.")
         except ApiError as ae:
             self.assertEqual("missing_ldap_record", ae.code)
 
     def test_get_user_with_caps(self):
-        user_info = LdapService.user_info("LB3DP")
+        user_info = LdapService().user_info("LB3DP")
         self.assertIsNotNone(user_info)
         self.assertEqual("lb3dp", user_info.uid)
 
     def test_get_user_with_spaces(self):
-        user_info = LdapService.user_info("    LB3DP ")
+        user_info = LdapService().user_info("    LB3DP ")
         # Call this a second time, becuase the error we ran into wasn't that it wasn't possible to find it,
         # but that it attepts to add it to the database a second time with the same id.
-        user_info = LdapService.user_info("    LB3DP ")
+        user_info = LdapService().user_info("    LB3DP ")
         self.assertIsNotNone(user_info)
         self.assertEqual("lb3dp", user_info.uid)
 

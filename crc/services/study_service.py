@@ -93,7 +93,7 @@ class StudyService(object):
                 primary_investigator = session.query(StudyAssociated).filter_by(study_id=study_model.id, role='Primary Investigator').first()
                 study_model.primary_investigator = primary_investigator.ldap_info.display_name if primary_investigator and primary_investigator.ldap_info else ''
                 study_model.last_activity_user, study_model.last_activity_date = self.get_last_user_and_date(study_model.id)
-                study_model.create_user_display = LdapService.user_info(study_model.user_uid).display_name
+                study_model.create_user_display = LdapService().user_info(study_model.user_uid).display_name
                 studies.append(study_model)
         return studies
 
@@ -172,7 +172,7 @@ class StudyService(object):
             last_activity_user = 'Not Started'
             last_activity_date = ""
         else:
-            last_activity_user = LdapService.user_info(last_event.user_uid).display_name
+            last_activity_user = LdapService().user_info(last_event.user_uid).display_name
             last_activity_date = last_event.date
 
         return last_activity_user, last_activity_date
@@ -185,7 +185,7 @@ class StudyService(object):
         if not study_model:
             study_model = session.query(StudyModel).filter_by(id=study_id).first()
         study = Study.from_model(study_model)
-        study.create_user_display = LdapService.user_info(study.user_uid).display_name
+        study.create_user_display = LdapService().user_info(study.user_uid).display_name
         last_activity_user, last_activity_date = StudyService.get_last_user_and_date(study_id)
         study.last_activity_user = last_activity_user
         study.last_activity_date = last_activity_date
@@ -266,7 +266,7 @@ class StudyService(object):
             raise ApiError('study_not_found', 'No study found with id = %d' % study_id)
 
         people = db.session.query(StudyAssociated).filter(StudyAssociated.study_id == study_id).all()
-        ldap_info = LdapService.user_info(study.user_uid)
+        ldap_info = LdapService().user_info(study.user_uid)
         owner = StudyAssociated(uid=study.user_uid, role='owner', send_email=True, access=True,
                                 ldap_info=ldap_info)
         people.append(owner)

@@ -160,7 +160,7 @@ class BaseTest(unittest.TestCase):
     def add_users(self):
         added_user = False
         for user_json in self.users:
-            ldap_info = LdapService.user_info(user_json['uid'])
+            ldap_info = LdapService().user_info(user_json['uid'])
             already_user = session.query(UserModel).filter_by(uid=user_json['uid']).first()
             if not already_user:
                 added_user = True
@@ -277,7 +277,7 @@ class BaseTest(unittest.TestCase):
     def create_user(self, uid="dhf8r", email="daniel.h.funk@gmail.com", display_name="Hoopy Frood"):
         user = session.query(UserModel).filter(UserModel.uid == uid).first()
         if user is None:
-            ldap_user = LdapService.user_info(uid)
+            ldap_user = LdapService().user_info(uid)
             user = UserModel(uid=uid, ldap_info=ldap_user)
             session.add(user)
             session.commit()
