@@ -55,15 +55,13 @@ class LdapService(object):
     @staticmethod
     def __get_ldap_entry(uva_uid):
         search_string = LdapService.uid_search_string % uva_uid
-        if search_string.isalnum():
-            conn = LdapService.__get_conn()
-            conn.search(LdapService.search_base, search_string, attributes=LdapService.attributes)
-            if len(conn.entries) < 1:
-                raise ApiError("missing_ldap_record",
-                               f"Unable to locate a user with id {uva_uid} in LDAP")
-            entry = conn.entries[0]
-            return entry
-        raise ApiError("bad_uva_uid", f"Bad uid {uva_uid}")
+        conn = LdapService.__get_conn()
+        conn.search(LdapService.search_base, search_string, attributes=LdapService.attributes)
+        if len(conn.entries) < 1:
+            raise ApiError("missing_ldap_record",
+                           f"Unable to locate a user with id {uva_uid} in LDAP")
+        entry = conn.entries[0]
+        return entry
 
     def user_info(self, uva_uid):
         uva_uid = uva_uid.strip().lower()
