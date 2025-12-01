@@ -53,7 +53,7 @@ class LdapService(object):
         return True
 
     @staticmethod
-    def get_ldap_entry(uva_uid):
+    def __get_ldap_entry(uva_uid):
         search_string = LdapService.uid_search_string % uva_uid
         conn = LdapService.__get_conn()
         conn.search(LdapService.search_base, search_string, attributes=LdapService.attributes)
@@ -65,18 +65,21 @@ class LdapService(object):
 
     def user_info(self, uva_uid):
         uva_uid = uva_uid.strip().lower()
-        user_info = db.session.query(LdapModel).filter(LdapModel.uid == uva_uid).first()
-        if not user_info:
-            app.logger.info("No cache for " + uva_uid)
-            entry = self.get_ldap_entry(uva_uid)
-            # Assure it definitely doesn't exist in the db after a search, in some cases the ldap server
-            # may find stuff we don't with just a strip and a lower.
-            user_info = db.session.query(LdapModel).filter(LdapModel.uid == entry.uid.value).first()
+        if uva_uid.isalnum():
+            user_info = db.session.query(LdapModel).filter(LdapModel.uid == uva_uid).first()
             if not user_info:
-                user_info = LdapModel.from_entry(entry)
-                db.session.add(user_info)
-                db.session.commit()
-        return user_info
+                app.logger.info("No cache for " + uva_uid)
+                entry = self.__get_ldap_entry(uva_uid)
+                # Assure it definitely doesn't exist in the db after a search,
+                # in some cases the ldap server
+                # may find stuff we don't with just a strip and a lower.
+                user_info = db.session.query(LdapModel).filter(LdapModel.uid == entry.uid.value).first()
+                if not user_info:
+                    user_info = LdapModel.from_entry(entry)
+                    db.session.add(user_info)
+                    db.session.commit()
+            return user_info
+        raise ApiError("bad_uva_uid", f"Bad uid {uva_uid}")
 
     @staticmethod
     def search_users(query, limit):
