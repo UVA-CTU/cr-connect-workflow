@@ -105,7 +105,7 @@ waitress==3.0.2
 wcwidth==0.2.13
 webob==1.8.9
 webtest==3.0.3
-werkzeug==2.2.3
+werkzeug==3.0.6
 wrapt==1.17.2
 wtforms==3.2.1
 xlrd==2.0.1
