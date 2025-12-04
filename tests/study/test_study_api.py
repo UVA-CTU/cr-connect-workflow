@@ -384,7 +384,7 @@ class TestStudyApi(BaseTest):
             event_type=StudyEventType.user,
             user_uid=self.users[0]['uid'],
         )
-        LdapService.user_info('dhf8r') # Assure that there is a dhf8r in ldap for StudyAssociated.
+        LdapService().user_info('dhf8r') # Assure that there is a dhf8r in ldap for StudyAssociated.
 
         email = EmailModel(subject="x", study_id=workflow.study_id)
         associate = StudyAssociated(study_id=workflow.study_id, uid=self.users[0]['uid'])

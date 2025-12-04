@@ -52,7 +52,7 @@ supervisor_info = ldap(supervisor_uid)   // Sets the supervisor information to l
             uid = args[0]
 
         try:
-            user_info = LdapService.user_info(uid)
+            user_info = LdapService().user_info(uid)
         except ApiError as ae:
             app.logger.info(ae)
             return {}

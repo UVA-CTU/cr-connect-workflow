@@ -91,7 +91,7 @@ class TestAuthentication(BaseTest):
         # Switch production mode on
         app.config['PRODUCTION'] = True
 
-        ldap_info = LdapService.user_info('dhf8r')
+        ldap_info = LdapService().user_info('dhf8r')
         session.add(UserModel(uid='dhf8r', ldap_info=ldap_info))
 
         # User should not be in the system yet.
@@ -121,7 +121,7 @@ class TestAuthentication(BaseTest):
         self.assert_success(rv)
 
         # User must exist in the mock ldap responses.
-        user = UserModel(uid="dhf8r", ldap_info=LdapService.user_info("dhf8r"))
+        user = UserModel(uid="dhf8r", ldap_info=LdapService().user_info("dhf8r"))
         rv = self.app.get('/v1.0/user', headers=self.logged_in_headers(user, redirect_url='http://omg.edu/lolwut'))
         self.assert_success(rv)
         user_data = json.loads(rv.get_data(as_text=True))

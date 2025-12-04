@@ -55,7 +55,7 @@ class TaskEvent(object):
         # Fixme: this was workflowMetaData - but it is the only place it is used.
         self.workflow = workflow
         self.user_uid = model.user_uid
-        self.user_display = LdapService.user_info(model.user_uid).display_name
+        self.user_display = LdapService().user_info(model.user_uid).display_name
         self.action = model.action
         self.task_id = model.task_id
         self.task_title = model.task_title

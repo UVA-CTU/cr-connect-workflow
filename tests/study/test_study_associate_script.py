@@ -50,8 +50,8 @@ class TestSudySponsorsScript(BaseTest):
         self.assertIn('sponsors', data)
         self.assertIn('out', data)
         print(data['out'])
-        dhf8r_info = LdapSchema().dump(LdapService.user_info('dhf8r'))
-        lb3dp_info = LdapSchema().dump(LdapService.user_info('lb3dp'))
+        dhf8r_info = LdapSchema().dump(LdapService().user_info('dhf8r'))
+        lb3dp_info = LdapSchema().dump(LdapService().user_info('lb3dp'))
 
         self.assertDictEqual({'uid': 'dhf8r', 'role': 'owner', 'send_email': True, 'access': True, 'ldap_info': dhf8r_info},
                              data['out'][1])

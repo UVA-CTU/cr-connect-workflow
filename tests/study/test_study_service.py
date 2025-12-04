@@ -90,7 +90,7 @@ class TestStudyService(BaseTest):
         user = self.create_user_with_study_and_workflow()
         spec_service = WorkflowSpecService()
         categories = spec_service.get_categories()
-        studies = StudyService().get_studies_for_user(user, categories)
+        studies = StudyService().get_studies_for_user(user)
         study = studies[0]
 
 
@@ -221,7 +221,7 @@ class TestStudyService(BaseTest):
         user = self.create_user_with_study_and_workflow()
         spec_service = WorkflowSpecService()
         categories = spec_service.get_categories()
-        studies = StudyService().get_studies_for_user(user, categories)
+        studies = StudyService().get_studies_for_user(user)
         # study_details has a valid REVIEW_TYPE, so we should get 1 study back
         self.assertEqual(1, len(studies))
 
@@ -232,7 +232,7 @@ class TestStudyService(BaseTest):
         study = db.session.query(StudyModel).first()
         study.review_type = 1984 # A particularly bad review type.
         db.session.commit()
-        studies = StudyService().get_studies_for_user(user, categories)
+        studies = StudyService().get_studies_for_user(user)
         # study_details has an invalid REVIEW_TYPE, so we should get 0 studies back
         self.assertEqual(0, len(studies))
 

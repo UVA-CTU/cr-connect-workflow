@@ -43,7 +43,7 @@ class GetWaitingBCA(Script):
                 # if task_event.task_lane == 'PIApprover':
                 user_info = None
                 if LdapService.user_exists(task_event.user_uid):
-                    user_info = LdapService.user_info(task_event.user_uid)
+                    user_info = LdapService().user_info(task_event.user_uid)
                 output = {'study_id': task_event.study_id,
                           'user_uid': task_event.user_uid,
                           'user_name': user_info.display_name if user_info else task_event.user_uid,

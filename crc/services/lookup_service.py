@@ -261,7 +261,7 @@ class LookupService(object):
     @staticmethod
     def _run_ldap_query(query, value, limit):
         if value:
-            return [LdapSchema().dump(LdapService.user_info(value))]
+            return [LdapSchema().dump(LdapService().user_info(value))]
         else:
             users = LdapService.search_users(query, limit)
         return users

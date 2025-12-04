@@ -76,26 +76,45 @@ class StudyService(object):
             pb_min_date = datetime(2019, 1, 1)
         return pb_min_date
 
-    def get_studies_for_user(self, user, categories, include_invalid=False):
-        """Returns a list of all studies for the given user."""
-
-        # gets studies for the user
-        associated = session.query(StudyAssociated).filter_by(uid=user.uid, access=True).all()
-        associated_studies = [x.study_id for x in associated]
-        db_studies = session.query(StudyModel).filter((StudyModel.user_uid == user.uid) |
-                                                      (StudyModel.id.in_(associated_studies))).all()
-
+    def __add_metadata(self, combined_studies):
         # add extra data to display in home page table
         studies = []
-        for row in db_studies:
+        for row in combined_studies:
             study_model = row
             if study_model.review_type in self.VALID_REVIEW_TYPES:
-                primary_investigator = session.query(StudyAssociated).filter_by(study_id=study_model.id, role='Primary Investigator').first()
-                study_model.primary_investigator = primary_investigator.ldap_info.display_name if primary_investigator and primary_investigator.ldap_info else ''
-                study_model.last_activity_user, study_model.last_activity_date = self.get_last_user_and_date(study_model.id)
-                study_model.create_user_display = LdapService.user_info(study_model.user_uid).display_name
+                primary_investigator = (
+                    session.query(StudyAssociated).filter_by(
+                        study_id=study_model.id, role='Primary Investigator').first())
+                study_model.primary_investigator = (
+                    primary_investigator.ldap_info.display_name) if (
+                        primary_investigator and primary_investigator.ldap_info) else ''
+                study_model.last_activity_user, study_model.last_activity_date = (
+                    self.get_last_user_and_date(study_model.id))
+                study_model.create_user_display = (
+                    LdapService().user_info(study_model.user_uid).display_name)
                 studies.append(study_model)
         return studies
+
+    def get_studies_for_user(self, user):
+        """Returns a list of all studies for the given user."""
+
+        # get associated study ids
+        associated_study_ids = \
+            [x[0] for x in
+             session.query(StudyAssociated.study_id).filter_by(uid=user.uid, access=True).all()]
+
+        # get user study ids
+        user_study_ids = \
+            [x[0] for x in
+                session.query(StudyModel.id).filter(StudyModel.user_uid == user.uid).all()]
+
+        combined_study_ids = list(set(user_study_ids + associated_study_ids))
+        combined_studies = (
+            session.query(StudyModel).filter(StudyModel.id.in_(combined_study_ids)).all())
+
+        display_studies = self.__add_metadata(combined_studies)
+        return display_studies
+
 
     @staticmethod
     def get_all_studies_with_files():
@@ -172,7 +191,7 @@ class StudyService(object):
             last_activity_user = 'Not Started'
             last_activity_date = ""
         else:
-            last_activity_user = LdapService.user_info(last_event.user_uid).display_name
+            last_activity_user = LdapService().user_info(last_event.user_uid).display_name
             last_activity_date = last_event.date
 
         return last_activity_user, last_activity_date
@@ -185,7 +204,7 @@ class StudyService(object):
         if not study_model:
             study_model = session.query(StudyModel).filter_by(id=study_id).first()
         study = Study.from_model(study_model)
-        study.create_user_display = LdapService.user_info(study.user_uid).display_name
+        study.create_user_display = LdapService().user_info(study.user_uid).display_name
         last_activity_user, last_activity_date = StudyService.get_last_user_and_date(study_id)
         study.last_activity_user = last_activity_user
         study.last_activity_date = last_activity_date
@@ -266,7 +285,7 @@ class StudyService(object):
             raise ApiError('study_not_found', 'No study found with id = %d' % study_id)
 
         people = db.session.query(StudyAssociated).filter(StudyAssociated.study_id == study_id).all()
-        ldap_info = LdapService.user_info(study.user_uid)
+        ldap_info = LdapService().user_info(study.user_uid)
         owner = StudyAssociated(uid=study.user_uid, role='owner', send_email=True, access=True,
                                 ldap_info=ldap_info)
         people.append(owner)
