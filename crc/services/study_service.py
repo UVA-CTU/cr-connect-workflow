@@ -197,10 +197,33 @@ class StudyService(object):
         return last_activity_user, last_activity_date
 
     @staticmethod
+    def set_primary_investigator(study):
+        """Sets the primary investigator for the study."""
+        associates = StudyService().get_study_associates(study.id)
+        for associate in associates:
+            if associate.role == "Primary Investigator":
+                study.primary_investigator = associate.ldap_info.display_name
+
+    @staticmethod
+    def process_categories(study, master_workflow_results):
+        """Processes the study categories."""
+        workflow_metas = []
+        for category in study.categories:
+            cat_workflow_metas = StudyService._get_workflow_metas(study.id, category)
+            workflow_metas.extend(cat_workflow_metas)
+            category_meta = []
+            if master_workflow_results:
+                category_meta = StudyService._update_status_of_category_meta(
+                    master_workflow_results, category)
+            category.workflows = cat_workflow_metas
+            category.meta = category_meta
+        study.warnings = StudyService.get_study_warnings(workflow_metas, master_workflow_results)
+
+    @staticmethod
     def get_study(study_id, categories: List[WorkflowSpecCategory], study_model: StudyModel = None,
                   master_workflow_results=None, process_categories=False):
-        """Returns a study model that contains all the workflows organized by category.
-        Pass in the results of the master workflow spec, and the status of other workflows will be updated."""
+        """Return a study model with all workflows organized by category.
+        If master_workflow_results is not None, the status of other workflows will be updated."""
         if not study_model:
             study_model = session.query(StudyModel).filter_by(id=study_id).first()
         study = Study.from_model(study_model)
@@ -214,22 +237,10 @@ class StudyService(object):
         study.files = list(files)
         if process_categories and master_workflow_results is not None:
             if study.status != StudyStatus.abandoned:
-                workflow_metas = []
-                for category in study.categories:
-                    cat_workflow_metas = StudyService._get_workflow_metas(study_id, category)
-                    workflow_metas.extend(cat_workflow_metas)
-                    category_meta = []
-                    if master_workflow_results:
-                        category_meta = StudyService._update_status_of_category_meta(master_workflow_results, category)
-                    category.workflows = cat_workflow_metas
-                    category.meta = category_meta
-                study.warnings = StudyService.get_study_warnings(workflow_metas, master_workflow_results)
+                StudyService.process_categories(study, master_workflow_results)
 
         if study.primary_investigator is None:
-            associates = StudyService().get_study_associates(study.id)
-            for associate in associates:
-                if associate.role == "Primary Investigator":
-                    study.primary_investigator = associate.ldap_info.display_name
+            StudyService.set_primary_investigator(study)
 
         # TODO: We don't use the progress bar. This should be removed.
         # study.progress = StudyService.get_progress_percent(study.id)
