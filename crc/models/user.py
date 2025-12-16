@@ -25,6 +25,11 @@ class UserModel(db.Model):
         # may change in the future.
         return self.uid in app.config['SUPERUSER_UIDS']
 
+    def is_ctu_report_admin(self):
+        # Currently ctu_report_admin abilities are set in the configuration, but this
+        # may change in the future.
+        return self.uid in app.config['CTU_REPORT_UIDS']
+
     def encode_auth_token(self):
         """
         Generates the Auth Token
@@ -66,6 +71,7 @@ class UserModelSchema(SQLAlchemyAutoSchema):
     uid = fields.String()
     is_admin = fields.Method('get_is_admin', dump_only=True)
     is_superuser = fields.Method('get_is_superuser', dump_only=True)
+    is_ctu_report_admin = fields.Method('get_is_ctu_report_admin', dump_only=True)
     ldap_info = fields.Nested(LdapSchema)
     impersonator = fields.Nested('self', many=False, allow_none=True)
 
@@ -76,6 +82,9 @@ class UserModelSchema(SQLAlchemyAutoSchema):
     @staticmethod
     def get_is_superuser(user):
         return user.is_superuser()
+
+    def get_is_ctu_report_admin(self, user):
+        return user.is_ctu_report_admin()
 
 
 class AdminSessionModel(db.Model):
