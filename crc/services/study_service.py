@@ -197,10 +197,33 @@ class StudyService(object):
         return last_activity_user, last_activity_date
 
     @staticmethod
+    def set_primary_investigator(study):
+        """Sets the primary investigator for the study."""
+        associates = StudyService().get_study_associates(study.id)
+        for associate in associates:
+            if associate.role == "Primary Investigator":
+                study.primary_investigator = associate.ldap_info.display_name
+
+    @staticmethod
+    def process_categories(study, master_workflow_results):
+        """Processes the study categories."""
+        workflow_metas = []
+        for category in study.categories:
+            cat_workflow_metas = StudyService._get_workflow_metas(study.id, category)
+            workflow_metas.extend(cat_workflow_metas)
+            category_meta = []
+            if master_workflow_results:
+                category_meta = StudyService._update_status_of_category_meta(
+                    master_workflow_results, category)
+            category.workflows = cat_workflow_metas
+            category.meta = category_meta
+        study.warnings = StudyService.get_study_warnings(workflow_metas, master_workflow_results)
+
+    @staticmethod
     def get_study(study_id, categories: List[WorkflowSpecCategory], study_model: StudyModel = None,
                   master_workflow_results=None, process_categories=False):
-        """Returns a study model that contains all the workflows organized by category.
-        Pass in the results of the master workflow spec, and the status of other workflows will be updated."""
+        """Return a study model with all workflows organized by category.
+        If master_workflow_results is not None, the status of other workflows will be updated."""
         if not study_model:
             study_model = session.query(StudyModel).filter_by(id=study_id).first()
         study = Study.from_model(study_model)
@@ -214,22 +237,10 @@ class StudyService(object):
         study.files = list(files)
         if process_categories and master_workflow_results is not None:
             if study.status != StudyStatus.abandoned:
-                workflow_metas = []
-                for category in study.categories:
-                    cat_workflow_metas = StudyService._get_workflow_metas(study_id, category)
-                    workflow_metas.extend(cat_workflow_metas)
-                    category_meta = []
-                    if master_workflow_results:
-                        category_meta = StudyService._update_status_of_category_meta(master_workflow_results, category)
-                    category.workflows = cat_workflow_metas
-                    category.meta = category_meta
-                study.warnings = StudyService.get_study_warnings(workflow_metas, master_workflow_results)
+                StudyService.process_categories(study, master_workflow_results)
 
         if study.primary_investigator is None:
-            associates = StudyService().get_study_associates(study.id)
-            for associate in associates:
-                if associate.role == "Primary Investigator":
-                    study.primary_investigator = associate.ldap_info.display_name
+            StudyService.set_primary_investigator(study)
 
         # TODO: We don't use the progress bar. This should be removed.
         # study.progress = StudyService.get_progress_percent(study.id)
@@ -403,66 +414,86 @@ class StudyService(object):
 
 
     @staticmethod
-    def __get_documents_status(study_id):
-        """Returns a list of documents related to the study, and any file information
-        that is available.."""
-
+    def __get_pb_docs(study_id):
+        """Get PB required docs"""
         # Get PB required docs, if Protocol Builder Service is enabled.
         if ProtocolBuilderService.is_enabled() and study_id is not None:
             try:
                 pb_docs = ProtocolBuilderService.get_required_docs(study_id=study_id)
             except requests.exceptions.ConnectionError as ce:
-                app.logger.error(f'Failed to connect to the Protocol Builder - {str(ce)}', exc_info=True)
+                app.logger.error(
+                    f'Failed to connect to the Protocol Builder - {str(ce)}', exc_info=True)
                 pb_docs = []
         else:
             pb_docs = []
-        # Loop through all known document types, get the counts for those files,
-        # and use pb_docs to mark those as required.
-        doc_dictionary = DocumentService.get_dictionary()
+        return pb_docs
 
+    @staticmethod
+    def __get_doc_required(doc, pb_docs):
+        doc_required = False
+        if ProtocolBuilderService.is_enabled() and doc['id'] != '':
+            pb_data = next(
+                (item for item in pb_docs['AUXDOCS'] if
+                 int(item['SS_AUXILIARY_DOC_TYPE_ID']) == int(doc['id'])),
+                None)
+            if pb_data:
+                doc_required = True
+        return doc_required
+
+    @staticmethod
+    def __get_doc_display_name(doc):
+        """Make a display name out of categories"""
+        name_list = []
+        for cat_key in ['category1', 'category2', 'category3']:
+            if doc[cat_key] not in ['', 'NULL', None]:
+                name_list.append(doc[cat_key])
+        doc_display_name = ' / '.join(name_list)
+        return doc_display_name
+
+    @staticmethod
+    def process_doc_files(doc, doc_files):
+        """Update doc['files'] and doc['status']"""
+        doc['files'] = []
+        for file_model in doc_files:
+            file = File.from_file_model(file_model, [])
+            file_data = FileSchema().dump(file)
+            del file_data['document']
+            doc['files'].append(Box(file_data))
+            # update the document status to match the status of the workflow it is in.
+            if 'status' not in doc or doc['status'] is None:
+                status = session.query(WorkflowModel.status).filter_by(id=file.workflow_id).scalar()
+                doc['status'] = status.value
+
+    @staticmethod
+    def __get_documents(study_id, pb_docs):
+        """Loop through all known document types, get the counts for those files,
+        and use pb_docs to mark those as required."""
         documents = {}
+        doc_dictionary = DocumentService.get_dictionary()
         study_files = UserFileService.get_files_for_study(study_id=study_id)
 
         for code, doc in doc_dictionary.items():
 
-            doc['required'] = False
-            if ProtocolBuilderService.is_enabled() and doc['id'] != '':
-                pb_data = next(
-                    (item for item in pb_docs['AUXDOCS'] if int(item['SS_AUXILIARY_DOC_TYPE_ID']) == int(doc['id'])),
-                    None)
-                if pb_data:
-                    doc['required'] = True
-
+            doc['required'] = StudyService.__get_doc_required(doc, pb_docs)
             doc['study_id'] = study_id
             doc['code'] = code
+            doc['display_name'] = StudyService.__get_doc_display_name(doc)
 
-
-            # Make a display name out of categories
-            name_list = []
-            for cat_key in ['category1', 'category2', 'category3']:
-                if doc[cat_key] not in ['', 'NULL', None]:
-                    name_list.append(doc[cat_key])
-            doc['display_name'] = ' / '.join(name_list)
-
-
-            # For each file, get associated workflow status
+            # For each file, get their associated workflow status
             doc_files = list(filter(lambda f: f.irb_doc_code == code, study_files))
-#            doc_files = UserFileService.get_files_for_study(study_id=study_id, irb_doc_code=code)
             doc['count'] = len(doc_files)
-            doc['files'] = []
-
-
-            for file_model in doc_files:
-                file = File.from_file_model(file_model, [])
-                file_data = FileSchema().dump(file)
-                del file_data['document']
-                doc['files'].append(Box(file_data))
-                # update the document status to match the status of the workflow it is in.
-                if 'status' not in doc or doc['status'] is None:
-                    status = session.query(WorkflowModel.status).filter_by(id=file.workflow_id).scalar()
-                    doc['status'] = status.value
+            StudyService.process_doc_files(doc, doc_files)  # update doc['files'] and doc['status']
 
             documents[code] = doc
+        return documents
+
+    @staticmethod
+    def __get_documents_status(study_id):
+        """Returns a list of documents related to the study and any file information
+        that is available."""
+
+        pb_docs = StudyService.__get_pb_docs(study_id)
+        documents = StudyService.__get_documents(study_id, pb_docs)
         return Box(documents)
 
     @staticmethod

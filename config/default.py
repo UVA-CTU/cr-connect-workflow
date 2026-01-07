@@ -28,6 +28,7 @@ PRODUCTION = environ.get('PRODUCTION', default="false") == "true"
 DEVELOPMENT = environ.get('DEVELOPMENT', default="false") == "true"
 TEST_UID = environ.get('TEST_UID', default="dhf8r")
 ADMIN_UIDS = re.split(r',\s*', environ.get('ADMIN_UIDS', default="kcm4zc"))
+CTU_REPORT_UIDS = re.split(r',\s*', environ.get('CTU_REPORT_UIDS', default="kcm4zc"))
 SUPERUSER_UIDS = re.split(r',\s*', environ.get('SUPERUSER_UIDS', default="kcm4zc"))
 DEFAULT_UID = environ.get('DEFAULT_UID', default="dhf8r")
 CRC_SUPPORT_EMAIL = environ.get('CRC_SUPPORT_EMAIL', default="CRCONNECTSUPPORT@uvahealth.org")

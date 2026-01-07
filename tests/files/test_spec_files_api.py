@@ -1,7 +1,7 @@
+from tests.base_test import BaseTest
+
 import io
 import json
-
-from tests.base_test import BaseTest
 
 from crc.models.file import FileType
 from crc.services.spec_file_service import SpecFileService
