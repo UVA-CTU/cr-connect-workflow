@@ -9,7 +9,7 @@ from crc.services.protocol_builder import ProtocolBuilderService
 from crc.services.study_service import StudyService
 
 
-class TestStudyInfoScript(BaseTest):
+class TestStudyInfo(BaseTest):
 
     test_uid = "dhf8r"
     test_study_id = 1
@@ -17,10 +17,13 @@ class TestStudyInfoScript(BaseTest):
     def do_work(self, info_type):
         app.config['PB_ENABLED'] = True
         self.create_reference_document()
-        self.workflow = self.create_workflow('study_info_script')
+        self.workflow = self.create_workflow('study_info')
         self.workflow_api = self.get_workflow_api(self.workflow)
         # grab study_info directly from script
-        study_info = StudyInfo().do_task(self.workflow_api.study_id, self.workflow.study.id, self.workflow.id, info_type)
+        study_info = StudyInfo().do_task(self.workflow_api.study_id,
+                                         self.workflow.study.id,
+                                         self.workflow.id,
+                                         info_type)
 
         # grab study info through a workflow
         first_task = self.workflow_api.next_task
