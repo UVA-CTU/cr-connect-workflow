@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_3debb49" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.0.0-dev">
+  <bpmn:process id="Process_SetStudyTitle" name="Set Study Title" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0sezgmj</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0sezgmj" sourceRef="StartEvent_1" targetRef="Activity_GetNewTitle" />
+    <bpmn:sequenceFlow id="Flow_0618inr" sourceRef="Activity_GetNewTitle" targetRef="Activity_SetNewTitle" />
+    <bpmn:sequenceFlow id="Flow_1swqi0c" sourceRef="Activity_SetNewTitle" targetRef="Activity_DisplayNewTitle" />
+    <bpmn:endEvent id="Event_05dbv9h">
+      <bpmn:incoming>Flow_1ivx21c</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1ivx21c" sourceRef="Activity_DisplayNewTitle" targetRef="Event_05dbv9h" />
+    <bpmn:userTask id="Activity_GetNewTitle" name="Get New Title">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="new_title" label="&#34;New Title&#34;" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0sezgmj</bpmn:incoming>
+      <bpmn:outgoing>Flow_0618inr</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:scriptTask id="Activity_SetNewTitle" name="Set New Title">
+      <bpmn:incoming>Flow_0618inr</bpmn:incoming>
+      <bpmn:outgoing>Flow_1swqi0c</bpmn:outgoing>
+      <bpmn:script>result = set_study_title(new_title=new_title)</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:manualTask id="Activity_DisplayNewTitle" name="Display New Title">
+      <bpmn:documentation>## New Title
+{{ result }}</bpmn:documentation>
+      <bpmn:incoming>Flow_1swqi0c</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ivx21c</bpmn:outgoing>
+    </bpmn:manualTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_SetStudyTitle">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_05dbv9h_di" bpmnElement="Event_05dbv9h">
+        <dc:Bounds x="752" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0sfbzaz_di" bpmnElement="Activity_GetNewTitle">
+        <dc:Bounds x="270" y="137" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_16lawu0_di" bpmnElement="Activity_SetNewTitle">
+        <dc:Bounds x="430" y="137" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_06bci68_di" bpmnElement="Activity_DisplayNewTitle">
+        <dc:Bounds x="590" y="137" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0sezgmj_di" bpmnElement="Flow_0sezgmj">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="270" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0618inr_di" bpmnElement="Flow_0618inr">
+        <di:waypoint x="370" y="177" />
+        <di:waypoint x="430" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1swqi0c_di" bpmnElement="Flow_1swqi0c">
+        <di:waypoint x="530" y="177" />
+        <di:waypoint x="590" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ivx21c_di" bpmnElement="Flow_1ivx21c">
+        <di:waypoint x="690" y="177" />
+        <di:waypoint x="752" y="177" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
