@@ -5,10 +5,11 @@ from os import environ
 from crc import app
 
 basedir = os.path.abspath(os.path.dirname(__file__))  # this is /app/config on testing
-print(f'basedir: {basedir}')
 root_path = app.root_path
 print(f'root_path: {root_path}')
-load_dotenv(os.path.join(root_path, '..', '.env'))
+env_file = os.path.join(root_path, '..', '..', '.env')
+print(f'env_file: {env_file}')
+load_dotenv(env_file)
 
 JSON_SORT_KEYS = False  # CRITICAL.  Do not sort the data when returning values to the front end.
 
