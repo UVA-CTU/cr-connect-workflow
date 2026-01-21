@@ -5,9 +5,7 @@ from os import environ
 from crc import app
 
 basedir = os.path.abspath(os.path.dirname(__file__))  # this is /app/config on testing
-root_path = app.root_path
-print(f'root_path: {root_path}')
-env_file = os.path.join(root_path, '..', '..', '.env')
+env_file = os.path.join('/home/sartography/docker-compose', '.env')
 print(f'env_file: {env_file}')
 load_dotenv(env_file)
 
