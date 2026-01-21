@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from os import environ
 
 basedir = os.path.abspath(os.path.dirname(__file__))
+print(f'basedir: {basedir}')
 load_dotenv(os.path.join(basedir, '..', '.env'))
 
 JSON_SORT_KEYS = False  # CRITICAL.  Do not sort the data when returning values to the front end.
