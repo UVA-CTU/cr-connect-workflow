@@ -68,7 +68,7 @@ pycparser==2.23
 pygithub==2.8.1
 pygments==2.19.2
 pyjwt==2.10.1
-pynacl==1.6.1
+pynacl==1.6.2
 python-dateutil==2.9.0.post0
 python-docx==1.2.0
 pytz==2025.2
