@@ -98,6 +98,7 @@ class StudyService(object):
     def get_studies_for_user(self, user):
         """Returns a list of all studies for the given user."""
 
+        last_time = time_it('get_studies_for_user')
         # get associated study ids
         associated_study_ids = \
             [x[0] for x in
@@ -113,6 +114,7 @@ class StudyService(object):
             session.query(StudyModel).filter(StudyModel.id.in_(combined_study_ids)).all())
 
         display_studies = self.__add_metadata(combined_studies)
+        last_time = time_it('get_studies_for_user', last_time)
         return display_studies
 
 
