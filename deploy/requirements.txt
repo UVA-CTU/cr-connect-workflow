@@ -63,7 +63,7 @@ packaging==25.0
 pandas==1.5.1
 prompt-toolkit==3.0.52
 psycopg2-binary==2.9.11
-pyasn1==0.6.1
+pyasn1==0.6.2
 pycparser==2.23
 pygithub==2.8.1
 pygments==2.19.2
