@@ -2,7 +2,8 @@ import os
 import re
 from os import environ
 
-basedir = os.path.abspath(os.path.dirname(__file__))
+basedir = os.path.abspath(os.path.dirname(__file__))  # this is /app/config on testing
+
 
 JSON_SORT_KEYS = False  # CRITICAL.  Do not sort the data when returning values to the front end.
 
@@ -28,6 +29,8 @@ PRODUCTION = environ.get('PRODUCTION', default="false") == "true"
 DEVELOPMENT = environ.get('DEVELOPMENT', default="false") == "true"
 TEST_UID = environ.get('TEST_UID', default="dhf8r")
 ADMIN_UIDS = re.split(r',\s*', environ.get('ADMIN_UIDS', default="kcm4zc"))
+TOOLBOX_UIDS = re.split(r',\s*', environ.get('TOOLBOX_UIDS', default="kcm4zc"))
+FINANCE_ADMIN_UIDS = re.split(r',\s*', environ.get('FINANCE_ADMIN_UIDS', default="kcm4zc"))
 CTU_REPORT_UIDS = re.split(r',\s*', environ.get('CTU_REPORT_UIDS', default="kcm4zc"))
 SUPERUSER_UIDS = re.split(r',\s*', environ.get('SUPERUSER_UIDS', default="kcm4zc"))
 DEFAULT_UID = environ.get('DEFAULT_UID', default="dhf8r")

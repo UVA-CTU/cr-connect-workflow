@@ -10,25 +10,32 @@ from crc.models.ldap import LdapSchema
 
 
 class UserModel(db.Model):
+    """User model"""
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     uid = db.Column(db.String, db.ForeignKey('ldap_model.uid'), unique=True)
     ldap_info = db.relationship("LdapModel")
 
     def is_admin(self):
-        # Currently admin abilities are set in the configuration, but this
-        # may change in the future.
+        """Used by backend (this app) also
+        passed to top-level-workflow to toggle admin toolbar and toolbox column"""
         return self.uid in app.config['ADMIN_UIDS']
 
+    def is_toolbox_user(self):
+        """Passed to top-level-workflow to toggle toolbox workflows"""
+        return self.uid in app.config['TOOLBOX_UIDS']
+
     def is_superuser(self):
-        # Currently superuser abilities are set in the configuration, but this
-        # may change in the future.
+        """Passed to top-level-workflow to toggle toolbox workflows"""
         return self.uid in app.config['SUPERUSER_UIDS']
 
     def is_ctu_report_admin(self):
-        # Currently ctu_report_admin abilities are set in the configuration, but this
-        # may change in the future.
+        """Passed to top-level-workflow to toggle report workflows"""
         return self.uid in app.config['CTU_REPORT_UIDS']
+
+    def is_finance_admin(self):
+        """Passed to top-level-workflow to toggle finance workflows"""
+        return self.uid in app.config['FINANCE_ADMIN_UIDS']
 
     def encode_auth_token(self):
         """
@@ -70,8 +77,10 @@ class UserModelSchema(SQLAlchemyAutoSchema):
         include_relationships = True
     uid = fields.String()
     is_admin = fields.Method('get_is_admin', dump_only=True)
+    is_toolbox_user = fields.Method('get_is_toolbox_user', dump_only=True)
     is_superuser = fields.Method('get_is_superuser', dump_only=True)
     is_ctu_report_admin = fields.Method('get_is_ctu_report_admin', dump_only=True)
+    is_finance_admin = fields.Method('get_is_finance_admin', dump_only=True)
     ldap_info = fields.Nested(LdapSchema)
     impersonator = fields.Nested('self', many=False, allow_none=True)
 
@@ -80,11 +89,18 @@ class UserModelSchema(SQLAlchemyAutoSchema):
         return user.is_admin()
 
     @staticmethod
+    def get_is_toolbox_user(user):
+        return user.is_toolbox_user()
+
+    @staticmethod
     def get_is_superuser(user):
         return user.is_superuser()
 
     def get_is_ctu_report_admin(self, user):
         return user.is_ctu_report_admin()
+
+    def get_is_finance_admin(self, user):
+        return user.is_finance_admin()
 
 
 class AdminSessionModel(db.Model):

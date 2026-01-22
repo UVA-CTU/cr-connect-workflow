@@ -98,6 +98,7 @@ class StudyService(object):
     def get_studies_for_user(self, user):
         """Returns a list of all studies for the given user."""
 
+        last_time = time_it('get_studies_for_user')
         # get associated study ids
         associated_study_ids = \
             [x[0] for x in
@@ -113,6 +114,7 @@ class StudyService(object):
             session.query(StudyModel).filter(StudyModel.id.in_(combined_study_ids)).all())
 
         display_studies = self.__add_metadata(combined_studies)
+        last_time = time_it('get_studies_for_user', last_time)
         return display_studies
 
 
@@ -632,7 +634,9 @@ class StudyService(object):
 
     @staticmethod
     def __abandon_missing_studies(missing_studies, db_studies):
+        last_time = time_it('__abandon_missing_studies')
         for missing_study_id in missing_studies:
+            last_time = time_it('__abandon_missing_studies', last_time)
             study = next((s for s in db_studies if s.id == missing_study_id), None)
             if study and study.status != StudyStatus.abandoned:
                 study.status = StudyStatus.abandoned
@@ -648,6 +652,7 @@ class StudyService(object):
 
             app.logger.info("The Protocol Builder is enabled. app.config['PB_ENABLED'] = " +
                             str(app.config['PB_ENABLED']))
+            last_time = time_it('sync_with_protocol_builder_if_enabled')
 
             # Get studies matching this user from Protocol Builder
             if user:
@@ -656,19 +661,25 @@ class StudyService(object):
             else:
                 pb_studies = []
 
+            last_time = time_it('sync_with_protocol_builder_if_enabled', last_time)
             # Get studies from the database
             db_studies = session.query(StudyModel).filter_by(user_uid=user.uid).all()
 
             # Update all studies from the protocol builder, create new studies as needed.
             # Further assures that every active study (that does exist in the protocol builder)
             # has a reference to every available workflow (though some may not have started yet)
+            last_time = time_it('sync_with_protocol_builder_if_enabled', last_time)
             self.__process_pb_studies(pb_studies, db_studies, user, specs)
 
             # Process studies in the DB that are no longer in Protocol Builder
+            last_time = time_it('sync_with_protocol_builder_if_enabled', last_time)
             missing_studies, exempt_studies = \
                 self.__get_missing_and_exempt_studies(db_studies, pb_studies)
+            last_time = time_it('sync_with_protocol_builder_if_enabled', last_time)
             self.__delete_exempt_studies(exempt_studies)
+            last_time = time_it('sync_with_protocol_builder_if_enabled', last_time)
             self.__abandon_missing_studies(missing_studies, db_studies)
+            last_time = time_it('sync_with_protocol_builder_if_enabled', last_time)
 
     @staticmethod
     def add_study_update_event(study, status, event_type, user_uid=None, comment=''):
