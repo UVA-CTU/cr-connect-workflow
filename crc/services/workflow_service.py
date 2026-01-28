@@ -111,27 +111,27 @@ class WorkflowService():
     def do_waiting():
         """Process waiting tasks.
         This is for timers and status checks"""
-        irb_status_checks = ("irb_submitted_for_pre_review_status_check",
-                         "irb_in_pre_review_status_check",
-                         "irb_investigator_agreement_status_check",
-                         "irb_non_uva_irb_status_check",
-                         "irb_agenda_date_status_check",
-                         "irb_committee_review_status_check",
-                         "irb_approved_with_conditions_status_check")
-        timer_event_workflows = ("submission_status_check",
-                                 "billing_coverage_analysis",
-                                 "department_chair",
-                                 "rsc_hire_approval",
-                                 "ids_approval",
-                                 "ids_waiver",
-                                 "laser_safety_approval",
-                                 "nicu_scientific_approval")
-        test_workflows = ("raise_error",
-                          "timer_event",
-                          "timer_event_error")
-        workflow_filter = irb_status_checks + timer_event_workflows + test_workflows
+        # irb_status_checks = ("irb_submitted_for_pre_review_status_check",
+        #                  "irb_in_pre_review_status_check",
+        #                  "irb_investigator_agreement_status_check",
+        #                  "irb_non_uva_irb_status_check",
+        #                  "irb_agenda_date_status_check",
+        #                  "irb_committee_review_status_check",
+        #                  "irb_approved_with_conditions_status_check")
+        # timer_event_workflows = ("submission_status_check",
+        #                          "billing_coverage_analysis",
+        #                          "department_chair",
+        #                          "rsc_hire_approval",
+        #                          "ids_approval",
+        #                          "ids_waiver",
+        #                          "laser_safety_approval",
+        #                          "nicu_scientific_approval")
+        # test_workflows = ("raise_error",
+        #                   "timer_event",
+        #                   "timer_event_error")
+        # workflow_filter = irb_status_checks + timer_event_workflows + test_workflows
         records = (db.session.query(WorkflowModel).
-                   filter(WorkflowModel.workflow_spec_id.in_(workflow_filter)).
+                   # filter(WorkflowModel.workflow_spec_id.in_(workflow_filter)).
                    filter(WorkflowModel.status == WorkflowStatus.waiting).
                    filter(WorkflowModel.state.in_(['required','optional'])).
                    all())
