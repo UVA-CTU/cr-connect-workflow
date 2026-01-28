@@ -88,8 +88,8 @@ class StudyService(object):
                 study_model.primary_investigator = (
                     primary_investigator.ldap_info.display_name) if (
                         primary_investigator and primary_investigator.ldap_info) else ''
-                study_model.last_activity_user, study_model.last_activity_date = (
-                    self.get_last_user_and_date(study_model.id))
+                # study_model.last_activity_user, study_model.last_activity_date = (
+                #     self.get_last_user_and_date(study_model.id))
                 # study_model.create_user_display = (
                 #     LdapService().user_info(study_model.user_uid).display_name)
                 studies.append(study_model)
