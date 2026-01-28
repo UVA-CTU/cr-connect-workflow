@@ -11,6 +11,7 @@ class TestWaitingTaskError(BaseTest):
 
         workflow = self.create_workflow('raise_error')
         workflow.status = WorkflowStatus.waiting
+        workflow.state = 'required'
         session.commit()
 
         status_before = session.query(WorkflowModel.status).filter(WorkflowModel.id == workflow.id).scalar()
