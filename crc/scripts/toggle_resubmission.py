@@ -25,17 +25,17 @@ class LocalReturnToPI(Script):
         if 'mode' in kwargs:
             mode = kwargs['mode']
             if mode == 'get_current':
-                sds_local_return_to_pi = task.data['data_store_get'](
+                sds_toggle_resubmission = task.data['data_store_get'](
                     type='study',
-                    key='sds_local_return_to_pi')
-                return {'sds_local_return_to_pi': sds_local_return_to_pi}
+                    key='sds_toggle_resubmission')
+                return {'sds_toggle_resubmission': sds_toggle_resubmission}
             if mode == 'turn_resubmission_on':
-                sds_local_return_to_pi = True
-                task.data['data_store_set'](type='study', key='sds_local_return_to_pi',
-                                            value=sds_local_return_to_pi)
+                sds_toggle_resubmission = True
+                task.data['data_store_set'](type='study', key='sds_toggle_resubmission',
+                                            value=sds_toggle_resubmission)
                 return {'message': 'Toggle Resubmission is turned on'}
 
-            task.data['data_store_set'](type='study', key='sds_local_return_to_pi',value='')
+            task.data['data_store_set'](type='study', key='sds_toggle_resubmission',value='')
             return {'message': 'Toggle Resubmission is turned off'}
 
         raise ApiError(code='missing_parameter', message="mode not provided")

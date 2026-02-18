@@ -20,7 +20,7 @@ class GetStudyProgressStatus(Script):
         # IRB is not using the built-in Return to PI feature
         # This hack allows us to display the Resubmission workflow
         local_return_to_pi = DataStoreBase().get_data_common('study',
-                                                 'sds_local_return_to_pi',
+                                                 'sds_toggle_resubmission',
                                                  study_id,
                                                  None,
                                                  None,
