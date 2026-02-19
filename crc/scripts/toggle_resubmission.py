@@ -22,7 +22,20 @@ class LocalReturnToPI(Script):
 
     def do_task(self, task, study_id, workflow_id, *args, **kwargs):  # pylint: disable=unused-argument
         """Method to perform the task."""
-        if 'message' in kwargs:
-            return kwargs['message']
-        else:
-            raise ApiError(code='missing_parameter', message="message not provided")
+        if 'mode' in kwargs:
+            mode = kwargs['mode']
+            if mode == 'get_current':
+                sds_toggle_resubmission = task.data['data_store_get'](
+                    type='study',
+                    key='sds_toggle_resubmission')
+                return {'sds_toggle_resubmission': sds_toggle_resubmission}
+            if mode == 'turn_resubmission_on':
+                sds_toggle_resubmission = True
+                task.data['data_store_set'](type='study', key='sds_toggle_resubmission',
+                                            value=sds_toggle_resubmission)
+                return {'message': 'Toggle Resubmission is turned on'}
+
+            task.data['data_store_set'](type='study', key='sds_toggle_resubmission',value='')
+            return {'message': 'Toggle Resubmission is turned off'}
+
+        raise ApiError(code='missing_parameter', message="mode not provided")
