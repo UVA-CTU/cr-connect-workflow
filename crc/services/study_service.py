@@ -703,7 +703,8 @@ class StudyService(object):
 
     @staticmethod
     def add_all_workflow_specs_to_study(study_model: StudyModel, specs: List[WorkflowSpecInfo]):
-        existing_models = session.query(WorkflowModel).filter(WorkflowModel.study == study_model).all()
+        existing_models = session.query(WorkflowModel).filter(
+            WorkflowModel.study_id == study_model.id).all()
         existing_spec_ids = list(map(lambda x: x.workflow_spec_id, existing_models))
         errors = []
         for workflow_spec in specs:
@@ -712,7 +713,8 @@ class StudyService(object):
             try:
                 StudyService._create_workflow_model(study_model, workflow_spec)
             except WorkflowException as we:
-                errors.append(ApiError.from_workflow_exception("workflow_startup_exception", str(we), we))
+                errors.append(ApiError.from_workflow_exception(
+                    "workflow_startup_exception", str(we), we))
         return errors
 
     @staticmethod
