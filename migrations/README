@@ -1,1 +1,2 @@
-Generic single-database configuration.
+To run the migration commands, use
+    flask db
