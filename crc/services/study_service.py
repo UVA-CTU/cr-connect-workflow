@@ -727,3 +727,23 @@ class StudyService(object):
         session.add(workflow_model)
         session.commit()
         return workflow_model
+
+    def get_stuck_studies(self):
+        """Return a list of studies stuck in pre_review_complete.
+        Specifically, studies in pre_review_complete in CRC2 but
+        something else in IRB Online"""
+        stuck_studies = []
+        pr_complete_studies = session.query(StudyModel).filter(
+            StudyModel.progress_status == 'pre_review_complete').all()
+
+        for pr_complete_study in pr_complete_studies:
+            prc_study_id = pr_complete_study.id
+            stuck_study_url = StudyService().get_study_url(prc_study_id)
+            irb_info = ProtocolBuilderService.get_irb_info(prc_study_id)[0]
+            irb_status = irb_info['IRB_STATUS']
+            stuck_studies.append({'id': prc_study_id,
+                                  'short_title':pr_complete_study.short_title,
+                                  'study_url': stuck_study_url,
+                                  'irb_status': irb_status}
+                                 )
+        return stuck_studies
