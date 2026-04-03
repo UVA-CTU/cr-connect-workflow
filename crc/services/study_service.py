@@ -740,7 +740,7 @@ class StudyService(object):
             prc_study_id = pr_complete_study.id
             stuck_study_url = StudyService().get_study_url(prc_study_id)
             irb_info_list = ProtocolBuilderService.get_irb_info(prc_study_id)
-            if irb_info_list:
+            if len(irb_info_list) > 0:
                 irb_info = irb_info_list[0]
                 irb_status = irb_info['IRB_STATUS'] if 'IRB_STATUS' in irb_info else ''
                 stuck_studies.append({'id': prc_study_id,
