@@ -95,7 +95,7 @@ class CustomBpmnScriptEngine(PythonScriptEngine):
         except WorkflowException as e:
             raise e
         except Exception as e:
-            raise WorkflowTaskExecException(task, f' {script}, {e}', e)
+            raise WorkflowTaskExecException(task, f' {script}, {str(e)}', e)
 
 class MyCustomParser(BpmnDmnParser):
     """
