@@ -120,7 +120,7 @@ waitress==3.0.2
 wcwidth==0.2.14
 WebOb==1.8.9
 WebTest==3.0.7
-Werkzeug==2.3.8
+Werkzeug==3.1.6
 wrapt==1.17.2
 WTForms==3.2.1
 xlrd==2.0.2
