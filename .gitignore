@@ -242,4 +242,5 @@ coverage.xml
 
 # Specification files
 SPECS
-debug_script.py
+/crc/scripts/debug_script.py
+/.github/copilot-instructions.md
