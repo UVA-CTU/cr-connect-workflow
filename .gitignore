@@ -242,3 +242,4 @@ coverage.xml
 
 # Specification files
 SPECS
+debug_script.py
