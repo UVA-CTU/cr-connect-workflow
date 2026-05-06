@@ -320,6 +320,29 @@ paths:
               schema:
                 type: string
                 format: binary
+  /study/{study_id}/retire:
+    parameters:
+      - name: study_id
+        in: path
+        required: true
+        description: The id of the study to retire.
+        schema:
+          type: integer
+          format: int32
+    post:
+      operationId: crc.api.study.retire_study
+      summary: Retire a study
+      tags:
+        - Studies
+      responses:
+        '200':
+          description: Study retired successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Study"
 
   /workflow-specification:
     get:

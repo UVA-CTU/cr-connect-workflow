@@ -387,6 +387,19 @@ class StudyService(object):
         session.delete(study)
         session.commit()
 
+    def retire_study(self, study_id):
+        """Method to retire a study."""
+        # session.query(TaskEventModel).filter_by(study_id=study_id).delete()
+        session.query(StudyAssociated).filter_by(study_id=study_id).delete()
+        for email in session.query(EmailModel).filter_by(study_id=study_id):
+            session.query(EmailDocCodesModel).filter_by(email_id=email.id).delete()
+        session.query(EmailModel).filter_by(study_id=study_id).delete()
+        session.query(StudyEvent).filter_by(study_id=study_id).delete()
+        workflows = session.query(WorkflowModel).filter_by(study_id=study_id).all()
+        for workflow in workflows:
+            workflow.bpmn_workflow_json = None
+        session.commit()
+
     @staticmethod
     def delete_workflow(workflow_id):
         workflow = session.query(WorkflowModel).get(workflow_id)

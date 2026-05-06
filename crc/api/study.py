@@ -155,6 +155,16 @@ def delete_study(study_id):
         message = "Failed to delete Study #%i due to an Integrity Error: %s" % (study_id, str(ie))
         raise ApiError(code="study_integrity_error", message=message)
 
+def retire_study(study_id):
+    try:
+        StudyService().retire_study(study_id)
+    except Exception as e:
+        session.rollback()
+        message = "Failed to retire Study #%i due to an error: %s" % (study_id, str(e))
+        raise ApiError(code="study_unknown_error", message=message)
+    study_model = session.query(StudyModel).filter_by(id=study_id).first()
+    return StudySchema().dump(study_model)
+
 
 def user_studies():
     """Returns all the studies associated with the current user. """
