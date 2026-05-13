@@ -1881,6 +1881,24 @@ paths:
                   success:
                     type: boolean
                     example: true
+  /status:
+    get:
+      operationId: crc.api.message.status
+      summary: Get the current status of the server.
+      tags:
+        - Admin
+      responses:
+        '200':
+          description: Site status information.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: The current status
+                    example: {"status": "OK"}
 
 components:
   securitySchemes:
