@@ -320,6 +320,29 @@ paths:
               schema:
                 type: string
                 format: binary
+  /study/{study_id}/retire:
+    parameters:
+      - name: study_id
+        in: path
+        required: true
+        description: The id of the study to retire.
+        schema:
+          type: integer
+          format: int32
+    post:
+      operationId: crc.api.study.retire_study
+      summary: Retire a study
+      tags:
+        - Studies
+      responses:
+        '200':
+          description: Study retired successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Study"
 
   /workflow-specification:
     get:
@@ -1858,6 +1881,24 @@ paths:
                   success:
                     type: boolean
                     example: true
+  /status:
+    get:
+      operationId: crc.api.message.status
+      summary: Get the current status of the server.
+      tags:
+        - Admin
+      responses:
+        '200':
+          description: Site status information.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: The current status
+                    example: {"status": "OK"}
 
 components:
   securitySchemes:

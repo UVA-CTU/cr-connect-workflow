@@ -19,6 +19,11 @@ class MessageModelSchema(Schema):
 
 
 
+def status():
+    """Used to test whether the API is up and running"""
+    message = MessageModel('status', 'OK')
+    return MessageModelSchema().dump(message)
+
 def status_message():
     """Gets a status message"""
     result = DataStoreBase().get_data_common('user',

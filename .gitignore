@@ -242,3 +242,9 @@ coverage.xml
 
 # Specification files
 SPECS
+/crc/scripts/debug_script.py
+/.github/copilot-instructions.md
+
+# Claude Code local config
+.claude/
+CLAUDE.md

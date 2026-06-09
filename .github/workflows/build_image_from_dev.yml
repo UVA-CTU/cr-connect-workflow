@@ -103,3 +103,14 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  trigger-e2e:
+    needs: build-and-push-image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger E2E tests
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.E2E_DISPATCH_TOKEN }}
+          repository: UVA-CTU/cr-connect-e2e
+          event-type: run-e2e
