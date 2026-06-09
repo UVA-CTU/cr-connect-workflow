@@ -24,10 +24,14 @@ class IADebugScript(Script):
     def do_task(self, task, study_id, workflow_id, *args, **kwargs):  # pylint: disable=unused-argument
         """Method to perform the task."""
         irb_info = self.pb.get_irb_info(study_id)
-        # workflow_ids = []
-        waiting_workflows = []
+        irb_info_return = None
+        if irb_info:
+            if isinstance(irb_info, dict):
+                irb_info_return = irb_info
+            elif isinstance(irb_info, list) and len(irb_info) > 0:
+                irb_info_return = irb_info[0]
 
-        # study_status = session.query(StudyModel.status).filter(StudyModel.id == study_id).scalar()
+        waiting_workflows = []
 
         workflow_models = (session.query(WorkflowModel).
                          filter(WorkflowModel.study_id == study_id).
@@ -51,4 +55,4 @@ class IADebugScript(Script):
                                       'workflow_spec_id': workflow.workflow_spec_id,
                                       })
 
-        return (irb_info[0] if len(irb_info) > 0 else {}, waiting_workflows, investigator_agreement)
+        return (irb_info_return, waiting_workflows, investigator_agreement)
