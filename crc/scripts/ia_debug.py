@@ -51,4 +51,4 @@ class IADebugScript(Script):
                                       'workflow_spec_id': workflow.workflow_spec_id,
                                       })
 
-        return (irb_info[0], waiting_workflows, investigator_agreement)
+        return (irb_info[0] if len(irb_info) > 0 else {}, waiting_workflows, investigator_agreement)
