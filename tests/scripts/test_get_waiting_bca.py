@@ -1,12 +1,14 @@
 from tests.base_test import BaseTest
 
 from crc import connexion_app, session
+from crc.models.ldap import LdapModel
 from crc.models.study import StudyModel
 from crc.models.workflow import WorkflowModel
 from crc.services.study_service import StudyService
 from crc.services.workflow_spec_service import WorkflowSpecService
 
 from unittest.mock import patch
+import random
 
 
 class TestGetWaitingBCA(BaseTest):
@@ -15,6 +17,17 @@ class TestGetWaitingBCA(BaseTest):
         """Test the get_waiting_bca script.
         The script returns a list of all BCA workflows that are waiting for approval."""
         self.add_users()
+
+        ldap_model = LdapModel(uid='abcd',
+                               display_name='Ab Cd',
+                               given_name='Ab',
+                               email_address='abcd@virginia.edu',
+                               telephone_number=''.join([random.choice('0123456789') for i in range(10)]),
+                               title='E0:Staff',
+                               department='EN:Engineering',
+                               affiliation='staff',
+                               sponsor_type='')
+        self.add_user(ldap_model)
         for spec in ['hello_world', 'billing_coverage_analysis']:
             # This creates a workflow using study_id 1, which it also creates if necessary.
             self.create_workflow(spec)
@@ -65,10 +78,10 @@ class TestGetWaitingBCA(BaseTest):
         # Try to submit the form with a user_uid that is not in the lane
         form_data = {'case_id': 1, 'case_worker': 'Miss Information', 'notes': 'Test notes'}
         with self.assertRaises(AssertionError) as ae:
-            self.complete_form(bca_model, saved_task, form_data, user_uid='kcm4zc')
+            self.complete_form(bca_model, saved_task, form_data, user_uid='abcd')
         assert ae.exception.args[0] == ("False is not true : BAD Response: 400. \n "
                                         "This task must be completed by '['dhf8r', 'lb3dp']', "
-                                        "but you are kcm4zc. . ")
+                                        "but you are abcd. . ")
 
         # We should have 2 waiting bca workflows now, one for each user in the lane
         workflow = self.create_workflow('get_waiting_bca')
