@@ -19,14 +19,15 @@ class GetStudyProgressStatus(Script):
     def do_task(self, task, study_id, workflow_id, *args, **kwargs):
         # IRB is not using the built-in Return to PI feature
         # This hack allows us to display the Resubmission workflow
-        local_return_to_pi = DataStoreBase().get_data_common('study',
-                                                 'sds_toggle_resubmission',
-                                                 study_id,
-                                                 None,
-                                                 None,
-                                                 None)
-        if local_return_to_pi == 'true':
-            return 'local_return_to_pi'
         progress_status = session.query(StudyModel.progress_status).filter(StudyModel.id == study_id).scalar()
         if progress_status:
+            if progress_status.value == 'in_pre_review':
+                local_return_to_pi = DataStoreBase().get_data_common('study',
+                                                                     'sds_toggle_resubmission',
+                                                                     study_id,
+                                                                     None,
+                                                                     None,
+                                                                     None)
+                if local_return_to_pi == 'true':
+                    return 'local_return_to_pi'
             return progress_status.value
