@@ -302,6 +302,10 @@ class StudyService(object):
         owner = StudyAssociated(uid=study.user_uid, role='owner', send_email=True, access=True,
                                 ldap_info=ldap_info)
         people.append(owner)
+        if hasattr(g, 'user') and g.user.is_superuser():
+            suser =  StudyAssociated(uid=g.user.uid, role='sysadmin', send_email=True, access=True,
+                                ldap_info=LdapService().user_info(g.user.uid))
+            people.append(suser)
         return people
 
     @staticmethod

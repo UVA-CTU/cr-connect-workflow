@@ -430,7 +430,7 @@ def _verify_user_and_role(processor, spiff_task):
 
     user = UserService.current_user(allow_admin_impersonate=True)
     allowed_users = WorkflowService.get_users_assigned_to_task(processor, spiff_task)
-    if user.uid not in allowed_users:
+    if not user.is_superuser() and user.uid not in allowed_users:
         raise ApiError.from_task("permission_denied",
                                  f"This task must be completed by '{allowed_users}', "
                                  f"but you are {user.uid}", spiff_task)
