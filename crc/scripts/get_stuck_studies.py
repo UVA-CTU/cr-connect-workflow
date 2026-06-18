@@ -20,5 +20,10 @@ class GetStuckStudies(Script):
 
     def do_task(self, task, study_id, workflow_id, *args, **kwargs):  # pylint: disable=unused-argument
         """Method to perform the task."""
-        stuck_studies = StudyService().get_stuck_studies()
+        mode = kwargs.get('mode', None)
+        if mode:
+            stuck_studies = StudyService().get_stuck_studies(mode)
+        else:
+            raise ApiError(code='missing_parameters',
+                           message='The get_stuck_studies script requires a mode parameter')
         return stuck_studies
