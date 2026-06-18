@@ -745,24 +745,31 @@ class StudyService(object):
         session.commit()
         return workflow_model
 
-    def get_stuck_studies(self):
-        """Return a list of studies stuck in pre_review_complete.
-        Specifically, studies in pre_review_complete in CRC2 but
-        something else in IRB Online"""
+    @staticmethod
+    def __get_stuck_studies(mode, status):
         stuck_studies = []
-        pr_complete_studies = session.query(StudyModel).filter(
-            StudyModel.progress_status == 'pre_review_complete').all()
-
-        for pr_complete_study in pr_complete_studies:
-            prc_study_id = pr_complete_study.id
-            stuck_study_url = StudyService().get_study_url(prc_study_id)
-            irb_info_list = ProtocolBuilderService.get_irb_info(prc_study_id)
+        db_studies = session.query(StudyModel).filter(
+            StudyModel.progress_status == mode).all()
+        for db_study in db_studies:
+            study_id = db_study.id
+            irb_info_list = ProtocolBuilderService.get_irb_info(study_id)
             if isinstance(irb_info_list, list) and len(irb_info_list) > 0:
                 irb_info = irb_info_list[0]
                 irb_status = irb_info['IRB_STATUS'] if 'IRB_STATUS' in irb_info else ''
-                stuck_studies.append({'id': prc_study_id,
-                                      'short_title':pr_complete_study.short_title,
+                if irb_status != status:
+                    stuck_study_url = StudyService().get_study_url(study_id)
+                    stuck_studies.append({'id': study_id,
+                                      'short_title':db_study.short_title,
                                       'study_url': stuck_study_url,
-                                      'irb_status': irb_status}
-                                     )
+                                      'irb_status': irb_status})
         return stuck_studies
+
+
+    def get_stuck_studies(self, mode='pre_review_complete'):
+        """Return a list of studies stuck in CRC2.
+        Specifically, studies in `mode` in CRC2 but
+        something else in IRB Online"""
+        status_map = {'pre_review_complete': 'PreReview Complete New Protocol',
+                      'in_pre_review': 'In PreReview New Protocol'}
+        stuck_studies = self.__get_stuck_studies(mode, status_map[mode])
+        return mode, status_map[mode], stuck_studies
