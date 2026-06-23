@@ -2,8 +2,10 @@ import os
 from ldap3.core.exceptions import LDAPExceptionError
 import datetime as dt
 
+from sqlalchemy import or_
+
 from crc import app, db
-from ldap3 import Connection, Server, MOCK_SYNC, RESTARTABLE
+from ldap3 import Connection, Server, MOCK_SYNC, RESTARTABLE, set_config_parameter
 
 from crc.api.common import ApiError
 from crc.models.ldap import LdapModel, LdapSchema
@@ -23,6 +25,11 @@ class LdapService(object):
     @staticmethod
     def __get_conn():
         if not LdapService.conn:
+            if 'DEVELOPMENT' in app.config and app.config['DEVELOPMENT'] is True:
+                # In development, fail fast instead of letting ldap3's RESTARTABLE strategy
+                # retry for up to a minute (30 tries * 2 sec) when the VPN is down.
+                set_config_parameter('RESTARTABLE_TRIES', 1)
+                set_config_parameter('RESTARTABLE_SLEEPTIME', 0)
             if app.config['LDAP_URL'] == 'mock':
                 server = Server('my_fake_server')
                 conn = Connection(server, client_strategy=MOCK_SYNC)
@@ -30,7 +37,8 @@ class LdapService(object):
                 conn.strategy.entries_from_json(file_path)
                 conn.bind()
             elif "LDAP_USER" in app.config and app.config['LDAP_USER'].strip() != '':
-                server = Server(host=app.config['LDAP_URL'], use_ssl=True)
+                server = Server(host=app.config['LDAP_URL'], use_ssl=True,
+                                connect_timeout=app.config['LDAP_TIMEOUT_SEC'])
                 conn = Connection(server, auto_bind=True,
                                   user=app.config['LDAP_USER'],
                                   password=app.config['LDAP_PASS'],
@@ -115,5 +123,24 @@ class LdapService(object):
                 count += 1
         except LDAPExceptionError as le:
             app.logger.info("Failed to execute ldap search. %s", str(le))
+            if 'DEVELOPMENT' in app.config and app.config['DEVELOPMENT'] is True:
+                return LdapService._search_local_cache(query, limit)
 
         return results
+
+    @staticmethod
+    def _search_local_cache(query, limit):
+        """Fallback used in development when the LDAP server can't be reached
+        (e.g. not connected to the VPN). Searches the local LdapModel cache of
+        previously-looked-up users instead of the live LDAP server."""
+        terms = [t.strip() for t in query.replace(',', ' ').split(' ') if t.strip()]
+        if not terms:
+            return []
+        q = db.session.query(LdapModel)
+        for term in terms:
+            like = f"%{term}%"
+            q = q.filter(or_(LdapModel.uid.ilike(like),
+                             LdapModel.display_name.ilike(like),
+                             LdapModel.given_name.ilike(like)))
+        matches = q.limit(limit).all()
+        return [LdapSchema().dump(m) for m in matches]
