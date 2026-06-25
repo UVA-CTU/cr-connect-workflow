@@ -230,9 +230,6 @@ class StudyService(object):
             study_model = session.query(StudyModel).filter_by(id=study_id).first()
         study = Study.from_model(study_model)
         study.create_user_display = LdapService().user_info(study.user_uid).display_name
-        last_activity_user, last_activity_date = StudyService.get_last_user_and_date(study_id)
-        study.last_activity_user = last_activity_user
-        study.last_activity_date = last_activity_date
         study.categories = categories
         files = UserFileService.get_files_for_study(study.id)
         files = (File.from_file_model(model, DocumentService.get_dictionary()) for model in files)
