@@ -3,7 +3,8 @@ import enum
 from marshmallow import INCLUDE, fields
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-from crc import db, ma
+from crc import app, db, ma
+from crc.api.common import ApiError
 from crc.models.study import StudyModel, StudySchema, WorkflowMetadataSchema, WorkflowMetadata
 from crc.models.workflow import WorkflowModel
 from crc.services.ldap_service import LdapService
@@ -55,7 +56,11 @@ class TaskEvent(object):
         # Fixme: this was workflowMetaData - but it is the only place it is used.
         self.workflow = workflow
         self.user_uid = model.user_uid
-        self.user_display = LdapService().user_info(model.user_uid).display_name
+        try:
+            self.user_display = LdapService().user_info(model.user_uid).display_name
+        except ApiError as e:
+            app.logger.warning(f"Unable to resolve display name for {model.user_uid}: {e.message}")
+            self.user_display = model.user_uid
         self.action = model.action
         self.task_id = model.task_id
         self.task_title = model.task_title
