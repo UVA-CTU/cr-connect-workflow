@@ -63,8 +63,12 @@ class LdapService(object):
     @staticmethod
     def __get_ldap_entry(uva_uid):
         search_string = LdapService.uid_search_string % uva_uid
-        conn = LdapService.__get_conn()
-        conn.search(LdapService.search_base, search_string, attributes=LdapService.attributes)
+        try:
+            conn = LdapService.__get_conn()
+            conn.search(LdapService.search_base, search_string, attributes=LdapService.attributes)
+        except LDAPExceptionError as le:
+            raise ApiError("ldap_connection_error",
+                           f"Unable to reach the LDAP server while looking up {uva_uid}: {le}")
         if len(conn.entries) < 1:
             raise ApiError("missing_ldap_record",
                            f"Unable to locate a user with id {uva_uid} in LDAP")
