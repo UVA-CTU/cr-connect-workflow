@@ -33,6 +33,13 @@ class LocalReturnToPI(Script):
                 sds_toggle_resubmission = True
                 task.data['data_store_set'](type='study', key='sds_toggle_resubmission',
                                             value=sds_toggle_resubmission)
+                sdsReturnedFromPreReview_value = (task.data['data_store_get'](type='study', key='sds_ReturnedFromPreReview', default='returned-0'))
+                resubmission_cnt = int(sdsReturnedFromPreReview_value[-1])
+                resubmission_cnt = resubmission_cnt + 1
+                sdsReturnedFromPreReview_value = 'returned-' + str(resubmission_cnt)
+                task.data['data_store_set'](type='study', key='sds_ReturnedFromPreReview',
+                               value=sdsReturnedFromPreReview_value)
+
                 return {'message': 'Toggle Resubmission is turned on'}
 
             task.data['data_store_set'](type='study', key='sds_toggle_resubmission',value='')
