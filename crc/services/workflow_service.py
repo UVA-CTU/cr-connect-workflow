@@ -1138,6 +1138,11 @@ class WorkflowService():
             return [processor.workflow_model.user_id]
         # Workflow associated with a study - get all the users
         else:
+            # Only admins have access to toolbox
+            if hasattr(processor, 'workflow_spec_id'):
+                workflow_spec_id = processor.workflow_spec_id
+                if WorkflowSpecService().get_spec(workflow_spec_id).category_id == 'admin_sandbox':
+                    return app.config['ADMIN_UIDS']
             if not hasattr(spiff_task.task_spec, 'lane') or spiff_task.task_spec.lane is None:
                 associated = StudyService.get_study_associates(processor.workflow_model.study.id)
                 return [user.uid for user in associated if user.access]
