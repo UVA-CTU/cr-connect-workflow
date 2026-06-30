@@ -261,7 +261,11 @@ class LookupService(object):
     @staticmethod
     def _run_ldap_query(query, value, limit):
         if value:
-            return [LdapSchema().dump(LdapService().user_info(value))]
+            try:
+                return [LdapSchema().dump(LdapService().user_info(value))]
+            except ApiError as e:
+                logging.exception(f"Failed to look up LDAP user '{value}': {e.message}")
+                return []
         else:
             users = LdapService.search_users(query, limit)
         return users
