@@ -248,3 +248,5 @@ SPECS
 # Claude Code local config
 .claude/
 CLAUDE.md
+RESUME.md
+STATUS.md
