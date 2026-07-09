@@ -6,6 +6,7 @@ from sqlalchemy import or_
 
 from crc import app, db
 from ldap3 import Connection, Server, MOCK_SYNC, RESTARTABLE, set_config_parameter
+from ldap3.utils.conv import escape_filter_chars
 
 from crc.api.common import ApiError
 from crc.models.ldap import LdapModel, LdapSchema
@@ -63,6 +64,8 @@ class LdapService(object):
     @staticmethod
     def __get_ldap_entry(uva_uid):
         search_string = LdapService.uid_search_string % uva_uid
+        safe_uva_uid = escape_filter_chars(uva_uid)
+        search_string = LdapService.uid_search_string % safe_uva_uid
         try:
             conn = LdapService.__get_conn()
             conn.search(LdapService.search_base, search_string, attributes=LdapService.attributes)
