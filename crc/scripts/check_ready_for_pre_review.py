@@ -185,8 +185,7 @@ class CheckReadyForPreReview(Script):
         # TODO: move this all back into the top_level_workflow, into a call activity, sub process, etc
         is_uva_irb_of_record = args[0]
         is_documents_ready = self.get_is_documents_ready(is_uva_irb_of_record, task)
-        # CTO Review not necessary any more
-        is_cto_required = False  # self.get_is_cto_required(task)
+        is_cto_required = self.get_is_cto_required(task)
         is_cto_ready = self.get_is_cto_ready(is_cto_required, task)
         is_compliance_reviews_ready = self.get_is_compliance_reviews_ready(is_uva_irb_of_record, task)
 

@@ -193,7 +193,10 @@ class StudyService(object):
             last_activity_user = 'Not Started'
             last_activity_date = ""
         else:
-            last_activity_user = LdapService().user_info(last_event.user_uid).display_name
+            try:
+                last_activity_user = LdapService().user_info(last_event.user_uid).display_name
+            except ApiError:
+                last_activity_user = last_event.user_uid
             last_activity_date = last_event.date
 
         return last_activity_user, last_activity_date
@@ -229,10 +232,10 @@ class StudyService(object):
         if not study_model:
             study_model = session.query(StudyModel).filter_by(id=study_id).first()
         study = Study.from_model(study_model)
-        study.create_user_display = LdapService().user_info(study.user_uid).display_name
-        last_activity_user, last_activity_date = StudyService.get_last_user_and_date(study_id)
-        study.last_activity_user = last_activity_user
-        study.last_activity_date = last_activity_date
+        try:
+            study.create_user_display = LdapService().user_info(study.user_uid).display_name
+        except ApiError:
+            study.create_user_display = study.user_uid
         study.categories = categories
         files = UserFileService.get_files_for_study(study.id)
         files = (File.from_file_model(model, DocumentService.get_dictionary()) for model in files)

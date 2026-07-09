@@ -308,7 +308,7 @@ class StudySchema(ma.Schema):
         model = Study
         additional = ["id", "title", "short_title", "last_updated", "user_uid",
                       "sponsor", "ind_number", "files", "enrollment_date",
-                      "create_user_display", "last_activity_date", "last_activity_user",
+                      "create_user_display",
                       "events_history", "short_name", "proposal_name", "progress", "primary_investigator"]
         unknown = INCLUDE
 
