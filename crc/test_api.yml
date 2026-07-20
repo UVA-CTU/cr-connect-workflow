@@ -1,0 +1,80 @@
+openapi: "3.0.2"
+info:
+  version: 1.0.0
+  title: Workflow Microservice - Test Endpoints
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:5000/v1.0
+paths:
+  /workflow/{workflow_id}/status:
+    parameters:
+      - name: workflow_id
+        in: path
+        required: true
+        description: The id of the workflow
+        schema:
+          type: integer
+          format: int32
+    put:
+      operationId: crc.api.test.set_workflow_status
+      summary: Test-only. Directly sets the status of a workflow, bypassing normal workflow execution.
+      tags:
+        - Test
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                new_workflow_status:
+                  type: string
+              required:
+                - new_workflow_status
+      responses:
+        '200':
+          description: The updated workflow status.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+
+  /study/{study_id}/progress-status:
+    parameters:
+      - name: study_id
+        in: path
+        required: true
+        description: The id of the study
+        schema:
+          type: integer
+          format: int32
+    put:
+      operationId: crc.api.test.set_study_progress_status
+      summary: Test-only. Directly sets the progress status of a study.
+      tags:
+        - Test
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                new_status:
+                  type: string
+              required:
+                - new_status
+      responses:
+        '200':
+          description: The updated study progress status.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  progress_status:
+                    type: string
