@@ -23,7 +23,7 @@ class TestStudyApi(BaseTest):
         "title": "Phase III Trial of Genuine People Personalities (GPP) Autonomous Intelligent Emotional Agents "
                  "for Interstellar Spacecraft",
         "last_updated": datetime.utcnow(),
-        "user_uid": "dhf8r",
+        "user_uid": "xtestx",
         "review_type": 2
     }
 
@@ -183,7 +183,7 @@ class TestStudyApi(BaseTest):
             s = StudyModel(
                 id=54321,  # This matches one of the ids from the study_details_json data.
                 title='The impact of pandemics on dog owner sanity after 12 days',
-                user_uid='dhf8r',
+                user_uid='xtestx',
             )
             session.add(s)
             session.commit()
@@ -384,7 +384,7 @@ class TestStudyApi(BaseTest):
             event_type=StudyEventType.user,
             user_uid=self.users[0]['uid'],
         )
-        LdapService().user_info('dhf8r') # Assure that there is a dhf8r in ldap for StudyAssociated.
+        LdapService().user_info('xtestx') # Assure that there is a xtestx in ldap for StudyAssociated.
 
         email = EmailModel(subject="x", study_id=workflow.study_id)
         associate = StudyAssociated(study_id=workflow.study_id, uid=self.users[0]['uid'])

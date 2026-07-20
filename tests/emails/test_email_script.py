@@ -11,7 +11,7 @@ class TestEmailScript(BaseTest):
         workflow = self.create_workflow('email')
 
         task_data = {
-          'PIComputingID': 'dhf8r@virginia.edu',
+          'PIComputingID': 'xtestx@virginia.edu',
           'ApprvlApprvr1': 'lb3dp@virginia.edu'
         }
         task = self.get_workflow_api(workflow).next_task
@@ -56,7 +56,7 @@ class TestEmailScript(BaseTest):
         workflow = self.create_workflow('email')
 
         task_data = {
-          'PIComputingID': 'dhf8r@virginia.edu',
+          'PIComputingID': 'xtestx@virginia.edu',
           'ApprvlApprvr1': 'lb3dp@virginia.edu'
         }
         task = self.get_workflow_api(workflow).next_task

@@ -177,8 +177,8 @@ class TestStudyService(BaseTest):
 
         self.assertEqual(10, len(investigators))
 
-        # dhf8r is in the ldap mock data.
-        self.assertEqual("dhf8r", investigators['PI']['user_id'])
+        # xtestx is in the ldap mock data.
+        self.assertEqual("xtestx", investigators['PI']['user_id'])
         self.assertEqual("Dan Funk", investigators['PI']['display_name']) # Data from ldap
         self.assertEqual("Primary Investigator", investigators['PI']['label']) # Data from xls file.
         self.assertEqual("Always", investigators['PI']['display']) # Data from xls file.
@@ -203,8 +203,8 @@ class TestStudyService(BaseTest):
 
         self.assertEqual(5, len(investigators))
 
-        # dhf8r is in the ldap mock data.
-        self.assertEqual("dhf8r", investigators['PI']['user_id'])
+        # xtestx is in the ldap mock data.
+        self.assertEqual("xtestx", investigators['PI']['user_id'])
         self.assertEqual("Dan Funk", investigators['PI']['display_name']) # Data from ldap
         self.assertEqual("Primary Investigator", investigators['PI']['label']) # Data from xls file.
         self.assertEqual("Always", investigators['PI']['display']) # Data from xls file.

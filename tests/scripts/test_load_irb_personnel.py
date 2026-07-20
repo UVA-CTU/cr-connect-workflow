@@ -10,7 +10,7 @@ from crc.services.protocol_builder import ProtocolBuilderService
 
 class TestLoadIRBPersonnel(BaseTest):
     test_study_id = 1
-    test_uid = "dhf8r"
+    test_uid = "xtestx"
     spec_path = FileSystemService.root_path()
     import_spec_path = os.path.join(app.root_path, '..', 'tests', 'data', 'load_irb_personnel', 'DATA')
 

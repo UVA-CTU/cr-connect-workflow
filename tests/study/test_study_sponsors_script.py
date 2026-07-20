@@ -9,7 +9,7 @@ from crc.services.workflow_processor import WorkflowProcessor
 from crc.services.workflow_service import WorkflowService
 
 class TestSudySponsorsScript(BaseTest):
-    test_uid = "dhf8r"
+    test_uid = "xtestx"
     test_study_id = 1
 
 

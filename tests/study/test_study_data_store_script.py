@@ -12,7 +12,7 @@ from crc.services.workflow_processor import WorkflowProcessor
 from crc.services.workflow_service import WorkflowService
 
 class TestSudySponsorsScript(BaseTest):
-    test_uid = "dhf8r"
+    test_uid = "xtestx"
     test_study_id = 1
 
 
@@ -21,7 +21,7 @@ class TestSudySponsorsScript(BaseTest):
         mock_get.return_value.ok = True
         mock_get.return_value.text = self.protocol_builder_response('sponsors.json')
         app.config['PB_ENABLED'] = True
-        flask.g.user = UserModel(uid='dhf8r')
+        flask.g.user = UserModel(uid='xtestx')
 
         self.load_test_spec("study_sponsors_data_store")
         WorkflowService.test_spec("study_sponsors_data_store")  # This would raise errors if it didn't validate
@@ -32,7 +32,7 @@ class TestSudySponsorsScript(BaseTest):
 
         mock_get.return_value.ok = True
         mock_get.return_value.text = self.protocol_builder_response('sponsors.json')
-        flask.g.user = UserModel(uid='dhf8r')
+        flask.g.user = UserModel(uid='xtestx')
         app.config['PB_ENABLED'] = True
 
         self.add_studies()

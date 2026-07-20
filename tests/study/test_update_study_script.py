@@ -15,7 +15,7 @@ class TestUpdateStudyScript(BaseTest):
         details = Box({
             "title": "My New Title",
             "short_title": "My New Short Title",
-            "pi": "dhf8r",
+            "pi": "xtestx",
             "short_name": "My Short Name",
             "proposal_name": "My Proposal Name"
         })

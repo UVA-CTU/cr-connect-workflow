@@ -44,7 +44,7 @@ class TestFilesApi(BaseTest):
         json_data = json.loads(rv.get_data(as_text=True))
         self.assertEqual(FileType.xlsx.value, json_data['type'])
         self.assertEqual("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", json_data['content_type'])
-        # self.assertEqual('dhf8r', json_data['user_uid'])
+        # self.assertEqual('xtestx', json_data['user_uid'])
 
     def test_set_reference_file_bad_extension(self):
         file_name = DocumentService.DOCUMENT_LIST

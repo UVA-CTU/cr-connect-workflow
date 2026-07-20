@@ -17,7 +17,7 @@ class TestWorkflowProcessorMultiInstance(BaseTest):
                     'label': 'Primary Investigator',
                     'display': 'Always',
                     'unique': 'Yes',
-                    'user_id': 'dhf8r',
+                    'user_id': 'xtestx',
                     'display_name': 'Dan Funk'},
                 'SC_I': {
                     'label': 'Study Coordinator I',
@@ -80,7 +80,7 @@ class TestWorkflowProcessorMultiInstance(BaseTest):
         # 1st investigator
         api_task = workflow_api.next_task
         self.assertEqual(WorkflowStatus.user_input_required, processor.get_status())
-        self.assertEqual("dhf8r", api_task.data["investigator"]["user_id"])
+        self.assertEqual("xtestx", api_task.data["investigator"]["user_id"])
         self.assertTrue(api_task.name.startswith("MultiInstanceTask"))
         self.assertEqual(3, api_task.multi_instance_count)
         self.assertEqual(1, api_task.multi_instance_index)
@@ -117,7 +117,7 @@ class TestWorkflowProcessorMultiInstance(BaseTest):
 
         task = processor.get_current_user_tasks()[0]
         self.assertEqual(task.id, api_task.id)
-        task.update_data({"investigator": {"email": "dhf8r@virginia.edu"}})
+        task.update_data({"investigator": {"email": "xtestx@virginia.edu"}})
         processor.complete_task(task)
         processor.do_engine_steps()
         workflow_api = WorkflowService.processor_to_workflow_api(processor)
@@ -128,7 +128,7 @@ class TestWorkflowProcessorMultiInstance(BaseTest):
         expected = self.mock_investigator_response
         expected['PI']['email'] = "asd3v@virginia.edu"
         expected['SC_I']['email'] = "asdf32@virginia.edu"
-        expected['DC']['email'] = "dhf8r@virginia.edu"
+        expected['DC']['email'] = "xtestx@virginia.edu"
 
         self.assertEqual(expected, api_task.data['StudyInfo']['investigators'])
         self.assertEqual(WorkflowStatus.complete, processor.get_status())
@@ -170,7 +170,7 @@ class TestWorkflowProcessorMultiInstance(BaseTest):
         nav = WorkflowService.processor_to_workflow_api(processor, task).navigation
         self.assertEqual("Primary Investigator", nav[1].description)
 
-        task.update_data({"investigator": {"email": "dhf8r@virginia.edu"}})
+        task.update_data({"investigator": {"email": "xtestx@virginia.edu"}})
         processor.complete_task(task)
         processor.do_engine_steps()
 
@@ -192,7 +192,7 @@ class TestWorkflowProcessorMultiInstance(BaseTest):
         expected = self.mock_investigator_response
         expected['PI']['email'] = "asd3v@virginia.edu"
         expected['SC_I']['email'] = "asdf32@virginia.edu"
-        expected['DC']['email'] = "dhf8r@virginia.edu"
+        expected['DC']['email'] = "xtestx@virginia.edu"
         self.assertEqual(expected,
             task.data['StudyInfo']['investigators'])
 

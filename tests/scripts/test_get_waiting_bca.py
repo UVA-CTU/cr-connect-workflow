@@ -80,7 +80,7 @@ class TestGetWaitingBCA(BaseTest):
         with self.assertRaises(AssertionError) as ae:
             self.complete_form(bca_model, saved_task, form_data, user_uid='abcd')
         assert ae.exception.args[0] == ("False is not true : BAD Response: 400. \n "
-                                        "This task must be completed by '['dhf8r', 'lb3dp']', "
+                                        "This task must be completed by '['xtestx', 'lb3dp']', "
                                         "but you are abcd. . ")
 
         # We should have 2 waiting bca workflows now, one for each user in the lane
@@ -90,7 +90,7 @@ class TestGetWaitingBCA(BaseTest):
 
         assert len(task.data['waiting_bca']) == 2
         for item in task.data['waiting_bca']:
-            assert item['user_uid'] in ['dhf8r', 'lb3dp']
+            assert item['user_uid'] in ['xtestx', 'lb3dp']
 
         # Complete the form with a valid user_uid. Either valid user can complete the task.
         self.complete_form(bca_model, saved_task, form_data, user_uid='lb3dp')

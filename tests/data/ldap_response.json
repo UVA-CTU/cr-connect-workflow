@@ -41,7 +41,7 @@
       }
     },
     {
-      "dn": "uid=dhf8r,ou=People,o=University of Virginia,c=US",
+      "dn": "uid=xtestx,ou=People,o=University of Virginia,c=US",
       "raw": {
         "cn": [
           "Dan Funk (dhf84)"
@@ -53,7 +53,7 @@
           "Dan"
         ],
         "mail": [
-          "dhf8r@virginia.edu"
+          "xtestx@virginia.edu"
         ],
         "objectClass": [
           "top",

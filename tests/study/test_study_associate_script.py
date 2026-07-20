@@ -16,7 +16,7 @@ from crc.services.workflow_processor import WorkflowProcessor
 from crc.services.workflow_service import WorkflowService
 
 class TestSudySponsorsScript(BaseTest):
-    test_uid = "dhf8r"
+    test_uid = "xtestx"
     test_study_id = 1
 
 
@@ -25,7 +25,7 @@ class TestSudySponsorsScript(BaseTest):
         app.config['PB_ENABLED'] = True
         mock_get.return_value.ok = True
         mock_get.return_value.text = self.protocol_builder_response('sponsors.json')
-        flask.g.user = UserModel(uid='dhf8r')
+        flask.g.user = UserModel(uid='xtestx')
         self.add_users()
         self.load_test_spec("study_sponsors_associate")
         WorkflowService.test_spec("study_sponsors_associate")  # This would raise errors if it didn't validate
@@ -35,7 +35,7 @@ class TestSudySponsorsScript(BaseTest):
     def test_study_sponsors_script(self, mock_get):
         mock_get.return_value.ok = True
         mock_get.return_value.text = self.protocol_builder_response('sponsors.json')
-        flask.g.user = UserModel(uid='dhf8r')
+        flask.g.user = UserModel(uid='xtestx')
         app.config['PB_ENABLED'] = True
 
         self.add_studies()
@@ -50,16 +50,16 @@ class TestSudySponsorsScript(BaseTest):
         self.assertIn('sponsors', data)
         self.assertIn('out', data)
         print(data['out'])
-        dhf8r_info = LdapSchema().dump(LdapService().user_info('dhf8r'))
+        xtestx_info = LdapSchema().dump(LdapService().user_info('xtestx'))
         lb3dp_info = LdapSchema().dump(LdapService().user_info('lb3dp'))
 
-        self.assertDictEqual({'uid': 'dhf8r', 'role': 'owner', 'send_email': True, 'access': True, 'ldap_info': dhf8r_info},
+        self.assertDictEqual({'uid': 'xtestx', 'role': 'owner', 'send_email': True, 'access': True, 'ldap_info': xtestx_info},
                              data['out'][1])
         self.assertDictEqual({'uid': 'lb3dp', 'role': 'SuperDude', 'send_email': False, 'access': True, 'ldap_info': lb3dp_info},
                              data['out'][0])
         self.assertDictEqual({'uid': 'lb3dp', 'role': 'SuperDude', 'send_email': False, 'access': True, 'ldap_info': lb3dp_info},
                              data['out2'])
-        self.assertDictEqual({'uid': 'dhf8r', 'role': 'owner', 'send_email': True, 'access': True, 'ldap_info': dhf8r_info},
+        self.assertDictEqual({'uid': 'xtestx', 'role': 'owner', 'send_email': True, 'access': True, 'ldap_info': xtestx_info},
                              data['out3'][1])
         self.assertDictEqual({'uid': 'lb3dp', 'role': 'SuperGal', 'send_email': False, 'access': True, 'ldap_info': lb3dp_info},
                              data['out3'][0])
@@ -72,7 +72,7 @@ class TestSudySponsorsScript(BaseTest):
     def test_study_sponsors_script_fail(self, mock_get):
         mock_get.return_value.ok = True
         mock_get.return_value.text = self.protocol_builder_response('sponsors.json')
-        flask.g.user = UserModel(uid='dhf8r')
+        flask.g.user = UserModel(uid='xtestx')
         app.config['PB_ENABLED'] = True
 
         self.add_studies()
@@ -89,7 +89,7 @@ class TestSudySponsorsScript(BaseTest):
     def test_study_sponsors_script_primary_user(self, mock_get):
         mock_get.return_value.ok = True
         mock_get.return_value.text = self.protocol_builder_response('sponsors.json')
-        flask.g.user = UserModel(uid='dhf8r')
+        flask.g.user = UserModel(uid='xtestx')
         app.config['PB_ENABLED'] = True
 
         self.add_studies()
@@ -110,7 +110,7 @@ class TestSudySponsorsScript(BaseTest):
     def test_study_sponsors_script_valid_users(self, mock_get):
         mock_get.return_value.ok = True
         mock_get.return_value.text = self.protocol_builder_response('sponsors.json')
-        flask.g.user = UserModel(uid='dhf8r')
+        flask.g.user = UserModel(uid='xtestx')
         app.config['PB_ENABLED'] = True
 
         self.add_studies()
@@ -126,7 +126,7 @@ class TestSudySponsorsScript(BaseTest):
         self.assertFalse('cah3us' in users)
         self.assertFalse('lje5u' in users)
         self.assertTrue('lb3dp' in users)
-        self.assertTrue('dhf8r' in users)
+        self.assertTrue('xtestx' in users)
         # the above should emulate what is going on when we determine if a user can
         # make changes to a study or not.
         # in theory all endpoints that need to be limited are calling the
@@ -141,7 +141,7 @@ class TestSudySponsorsScript(BaseTest):
         mock_get.return_value.text = self.protocol_builder_response('sponsors.json')
         details_response = self.protocol_builder_response('study_details.json')
         mock_details.return_value = json.loads(details_response)
-        flask.g.user = UserModel(uid='dhf8r')
+        flask.g.user = UserModel(uid='xtestx')
         app.config['PB_ENABLED'] = True
 
         self.add_studies()
@@ -157,7 +157,7 @@ class TestSudySponsorsScript(BaseTest):
         app.config['PB_ENABLED'] = False
         output = user_studies()
         self.assertEqual(output[0]['id'], 0)
-        self.assertEqual(output[0]['user_uid'], 'dhf8r')
+        self.assertEqual(output[0]['user_uid'], 'xtestx')
         flask.g.user = UserModel(uid='lje5u')
         flask.g.token = 'my spiffy token'
         app.config['PB_ENABLED'] = False
@@ -169,7 +169,7 @@ class TestSudySponsorsScript(BaseTest):
     def test_study_sponsors_script_ensure_delete(self, mock_get):
         mock_get.return_value.ok = True
         mock_get.return_value.text = self.protocol_builder_response('sponsors.json')
-        flask.g.user = UserModel(uid='dhf8r')
+        flask.g.user = UserModel(uid='xtestx')
         app.config['PB_ENABLED'] = True
 
         self.add_studies()

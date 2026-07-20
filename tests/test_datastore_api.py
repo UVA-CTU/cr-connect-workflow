@@ -35,7 +35,7 @@ class DataStoreTest(BaseTest):
 
     def add_test_user_data(self):
         study_data = DataStoreSchema().dump(self.TEST_STUDY_ITEM)
-        study_data['user_id'] = 'dhf8r'
+        study_data['user_id'] = 'xtestx'
         del(study_data['study_id'])
         study_data['value'] = 'User Value'
         rv = self.app.post('/v1.0/datastore',

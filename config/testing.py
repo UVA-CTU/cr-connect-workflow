@@ -22,7 +22,7 @@ SQLALCHEMY_DATABASE_URI = environ.get(
     'SQLALCHEMY_DATABASE_URI',
     default="postgresql://%s:%s@%s:%s/%s" % (DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME)
 )
-ADMIN_UIDS = ['dhf8r']
+ADMIN_UIDS = ['xtestx']
 
 print('### USING TESTING CONFIG: ###')
 print('SQLALCHEMY_DATABASE_URI = ', SQLALCHEMY_DATABASE_URI)

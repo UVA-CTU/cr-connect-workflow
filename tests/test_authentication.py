@@ -16,7 +16,7 @@ from unittest.mock import patch
 
 
 class TestAuthentication(BaseTest):
-    admin_uid = 'dhf8r'
+    admin_uid = 'xtestx'
     non_admin_uid = 'lb3dp'
 
     def tearDown(self):
@@ -33,18 +33,18 @@ class TestAuthentication(BaseTest):
         # Set the timeout to something else
         new_ttl = 4.0
         app.config['TOKEN_AUTH_TTL_HOURS'] = new_ttl
-        user_1 = UserModel(uid="dhf8r")
+        user_1 = UserModel(uid="xtestx")
         expected_exp_1 = timegm((datetime.utcnow() + timedelta(hours=new_ttl)).utctimetuple())
         auth_token_1 = user_1.encode_auth_token()
         self.assertTrue(isinstance(auth_token_1, str))
-        self.assertEqual("dhf8r", user_1.decode_auth_token(auth_token_1).get("sub"))
+        self.assertEqual("xtestx", user_1.decode_auth_token(auth_token_1).get("sub"))
         #actual_exp_1 = user_1.decode_auth_token(auth_token_1).get("exp")
         #self.assertTrue(expected_exp_1 - 1000 <= actual_exp_1 <= expected_exp_1 + 1000)
 
         # # Set the timeout to something else
         # neg_ttl = -0.01
         # app.config['TOKEN_AUTH_TTL_HOURS'] = neg_ttl
-        # user_2 = UserModel(uid="dhf8r")
+        # user_2 = UserModel(uid="xtestx")
         # expected_exp_2 = timegm((datetime.utcnow() + timedelta(hours=neg_ttl)).utctimetuple())
         # auth_token_2 = user_2.encode_auth_token()
         # self.assertTrue(isinstance(auth_token_2, bytes))
@@ -55,7 +55,7 @@ class TestAuthentication(BaseTest):
         #
         # # Set the timeout back to where it was
         # app.config['TOKEN_AUTH_TTL_HOURS'] = orig_ttl
-        # user_3 = UserModel(uid="dhf8r")
+        # user_3 = UserModel(uid="xtestx")
         # expected_exp_3 = timegm((datetime.utcnow() + timedelta(hours=new_ttl)).utctimetuple())
         # auth_token_3 = user_3.encode_auth_token()
         # self.assertTrue(isinstance(auth_token_3, bytes))
@@ -91,8 +91,8 @@ class TestAuthentication(BaseTest):
         # Switch production mode on
         app.config['PRODUCTION'] = True
 
-        ldap_info = LdapService().user_info('dhf8r')
-        session.add(UserModel(uid='dhf8r', ldap_info=ldap_info))
+        ldap_info = LdapService().user_info('xtestx')
+        session.add(UserModel(uid='xtestx', ldap_info=ldap_info))
 
         # User should not be in the system yet.
         user = session.query(UserModel).filter(UserModel.uid == self.non_admin_uid).first()
@@ -121,7 +121,7 @@ class TestAuthentication(BaseTest):
         self.assert_success(rv)
 
         # User must exist in the mock ldap responses.
-        user = UserModel(uid="dhf8r", ldap_info=LdapService().user_info("dhf8r"))
+        user = UserModel(uid="xtestx", ldap_info=LdapService().user_info("xtestx"))
         rv = self.app.get('/v1.0/user', headers=self.logged_in_headers(user, redirect_url='http://omg.edu/lolwut'))
         self.assert_success(rv)
         user_data = json.loads(rv.get_data(as_text=True))

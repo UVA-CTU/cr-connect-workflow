@@ -64,7 +64,7 @@ email(subject=subject, recipients=recipients)</bpmn:script>
     <bpmn:scriptTask id="Activity_AddAssociates" name="Add Associates">
       <bpmn:incoming>Flow_1rmzlhd</bpmn:incoming>
       <bpmn:outgoing>Flow_0b5st2e</bpmn:outgoing>
-      <bpmn:script>update_study_associates([{'uid':'dhf8r','role':'Chief Bee Keeper', 'send_email': True, 'access':True},{'uid':'lb3dp','role':'Chief Cat Herder', 'send_email': True, 'access':True}])</bpmn:script>
+      <bpmn:script>update_study_associates([{'uid':'xtestx','role':'Chief Bee Keeper', 'send_email': True, 'access':True},{'uid':'lb3dp','role':'Chief Cat Herder', 'send_email': True, 'access':True}])</bpmn:script>
     </bpmn:scriptTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">

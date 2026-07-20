@@ -33,7 +33,7 @@ class TestWorkflowApi(BaseTest):
         # add a task_event
         task_event = TaskEventModel(
             study_id=workflow.study_id,
-            user_uid='dhf8r',
+            user_uid='xtestx',
             workflow_id=workflow.id,
             workflow_spec_id=workflow.workflow_spec_id,
             spec_version='',
@@ -54,7 +54,7 @@ class TestWorkflowApi(BaseTest):
         session.commit()
 
         # make sure we have a task_event
-        tasks = session.query(TaskEventModel).filter(TaskEventModel.user_uid=='dhf8r').all()
+        tasks = session.query(TaskEventModel).filter(TaskEventModel.user_uid=='xtestx').all()
         self.assertEqual(1, len(tasks))
 
         rv = self.app.get(f'/v1.0/task_events',
