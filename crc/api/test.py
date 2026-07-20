@@ -2,9 +2,18 @@ from crc import session
 from crc.api.common import ApiError
 from crc.models.study import ProgressStatus, StudyModel
 from crc.models.workflow import WorkflowModel, WorkflowStatus
+from flask import request
 
+import os
+
+
+def _check_test_api_key():
+    expected = os.environ.get('TEST_API_KEY')
+    if not expected or request.headers.get('X-Test-Api-Key') != expected:
+        raise ApiError(code='unauthorized', message='Invalid or missing test API key', status_code=401)
 
 def set_workflow_status(workflow_id, body):
+    _check_test_api_key()
     new_workflow_status = body['new_workflow_status']
     try:
         workflow_status = WorkflowStatus(new_workflow_status)
@@ -21,6 +30,7 @@ def set_workflow_status(workflow_id, body):
 
 
 def set_study_progress_status(study_id, body):
+    _check_test_api_key()
     new_status = body['new_status']
     try:
         progress_status = ProgressStatus[new_status]
