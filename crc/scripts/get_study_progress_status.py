@@ -21,7 +21,7 @@ class GetStudyProgressStatus(Script):
         # This hack allows us to display the Resubmission workflow
         progress_status = session.query(StudyModel.progress_status).filter(StudyModel.id == study_id).scalar()
         if progress_status:
-            if progress_status.value == 'in_pre_review':
+            if progress_status.value == 'in_pre_review' or progress_status.value == 'submitted_for_pre_review':
                 local_return_to_pi = DataStoreBase().get_data_common('study',
                                                                      'sds_toggle_resubmission',
                                                                      study_id,
