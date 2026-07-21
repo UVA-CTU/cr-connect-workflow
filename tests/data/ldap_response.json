@@ -159,6 +159,88 @@
           "Staff"
         ]
       }
+    },
+    {
+      "dn": "uid=cm4r,ou=People,o=University of Virginia,c=US",
+      "raw": {
+        "cn": [
+          "Carol A Manning (cm4r)"
+        ],
+        "displayName": [
+          "Carol A Manning"
+        ],
+        "givenName": [
+          "Carol"
+        ],
+        "mail": [
+          "cm4r@virginia.edu"
+        ],
+        "objectClass": [
+          "top",
+          "person",
+          "organizationalPerson",
+          "inetOrgPerson",
+          "uvaPerson",
+          "uidObject"
+        ],
+        "telephoneNumber": [
+          "4349821012"
+        ],
+        "title": [
+          "E1:Clinician Physician",
+          "E0:Professor"
+        ],
+        "uvaDisplayDepartment": [
+          "E1:UPG-MD-NEUR Neurology",
+          "E0:MD-NEUR Neurology"
+        ],
+        "uvaPersonIAMAffiliation": [
+          "faculty",
+          "staff"
+        ],
+        "uvaPersonSponsoredType": []
+      }
+    },
+    {
+      "dn": "uid=jpn2r,ou=People,o=University of Virginia,c=US",
+      "raw": {
+        "cn": [
+          "James P Nataro (jpn2r)"
+        ],
+        "displayName": [
+          "James P Nataro"
+        ],
+        "givenName": [
+          "James"
+        ],
+        "mail": [
+          "jpn2r@virginia.edu"
+        ],
+        "objectClass": [
+          "top",
+          "person",
+          "organizationalPerson",
+          "inetOrgPerson",
+          "uvaPerson",
+          "uidObject"
+        ],
+        "telephoneNumber": [
+          "4349245093"
+        ],
+        "title": [
+          "E1:Clinician Physician",
+          "E0:Professor"
+        ],
+        "uvaDisplayDepartment": [
+          "E1:UPG-MD-PEDT Infectious Diseases",
+          "E0:MD-PEDT Pediatrics-Admin"
+        ],
+        "uvaPersonIAMAffiliation": [
+          "faculty",
+          "staff"
+        ],
+        "uvaPersonSponsoredType": []
+      }
     }
   ]
 }
