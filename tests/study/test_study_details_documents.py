@@ -18,7 +18,7 @@ from crc.services.reference_file_service import ReferenceFileService
 
 
 class TestStudyDetailsDocumentsScript(BaseTest):
-    test_uid = "dhf8r"
+    test_uid = "xtestx"
     test_study_id = 1
 
     """

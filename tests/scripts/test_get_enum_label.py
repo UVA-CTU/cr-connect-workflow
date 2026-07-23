@@ -21,7 +21,7 @@ class TestGetEnumLabel(BaseTest):
 
     def test_get_enum_label_for_ldap(self):
         result = self.labelScript.do_task(self.task, self.workflow_api.study_id, self.workflow_api.id,
-                            task='myFormTask', field='ldap', value='dhf8r')
+                            task='myFormTask', field='ldap', value='xtestx')
         self.assertEqual("Dan Funk", result)
 
     def test_get_enum_label_for_standard_enum(self):

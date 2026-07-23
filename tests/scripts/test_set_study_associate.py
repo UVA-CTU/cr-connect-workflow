@@ -15,19 +15,19 @@ class TestSetStudyAssociate(BaseTest):
         self.update_script = UpdateStudyAssociates()
 
     def test_update_study_associate(self):
-        self.update_script.do_task(self.task, self.study_id, self.workflow.id, uid='dhf8r', role='PI')
+        self.update_script.do_task(self.task, self.study_id, self.workflow.id, uid='xtestx', role='PI')
         associates = db.session.query(StudyAssociated).filter(StudyAssociated.study_id == self.study_id).all()
         self.assertEqual(1, len(associates))
 
     def test_no_duplicate_associates(self):
-        self.update_script.do_task(self.task, self.study_id, self.workflow.id, uid='dhf8r', role='PI')
-        self.update_script.do_task(self.task, self.study_id, self.workflow.id, uid='dhf8r', role='PI')
-        self.update_script.do_task(self.task, self.study_id, self.workflow.id, uid='dhf8r', role='PI')
+        self.update_script.do_task(self.task, self.study_id, self.workflow.id, uid='xtestx', role='PI')
+        self.update_script.do_task(self.task, self.study_id, self.workflow.id, uid='xtestx', role='PI')
+        self.update_script.do_task(self.task, self.study_id, self.workflow.id, uid='xtestx', role='PI')
         associates = db.session.query(StudyAssociated).filter(StudyAssociated.study_id == self.study_id).all()
         self.assertEqual(1, len(associates))
 
     def test_same_uid_in_two_rules(self):
-        self.update_script.do_task(self.task, self.study_id, self.workflow.id, uid='dhf8r', role='PI')
-        self.update_script.do_task(self.task, self.study_id, self.workflow.id, uid='dhf8r', role='DC')
+        self.update_script.do_task(self.task, self.study_id, self.workflow.id, uid='xtestx', role='PI')
+        self.update_script.do_task(self.task, self.study_id, self.workflow.id, uid='xtestx', role='DC')
         associates = db.session.query(StudyAssociated).filter(StudyAssociated.study_id == self.study_id).all()
         self.assertEqual(2, len(associates))

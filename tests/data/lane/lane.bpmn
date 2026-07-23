@@ -22,7 +22,7 @@
       <bpmn:incoming>Flow_0g40xjp</bpmn:incoming>
       <bpmn:outgoing>Flow_1h9cy95</bpmn:outgoing>
       <bpmn:script>myvar = 'test'
-lane_person = 'dhf8r'</bpmn:script>
+lane_person = 'xtestx'</bpmn:script>
     </bpmn:scriptTask>
     <bpmn:sequenceFlow id="Flow_1h9cy95" sourceRef="Activity_1peolxr" targetRef="Activity_0wsfgtl" />
     <bpmn:sequenceFlow id="Flow_1t8h1qn" sourceRef="Activity_0wsfgtl" targetRef="Activity_0rjrd3c" />

@@ -47,7 +47,7 @@ class TestUpdateStaleTaskEvents(BaseTest):
         # We should have one ASSIGNMENT event, for the study owner
         task_events = self.get_workflow_events(workflow.id)
         assert len(task_events) == 1
-        assert task_events[0]['user_uid'] == 'dhf8r'
+        assert task_events[0]['user_uid'] == 'xtestx'
 
         self.complete_form(workflow, task, {})
 
@@ -96,7 +96,7 @@ class TestUpdateStaleTaskEvents(BaseTest):
         task_events = self.get_workflow_events(workflow.id)
         assert len(task_events) == 1
 
-        assert task_events[0]['user_uid'] == 'dhf8r'
+        assert task_events[0]['user_uid'] == 'xtestx'
         assert task_events[0]['task_name'] == 'Activity_ReviewBeforeUpdate'
 
         self.complete_form(workflow, task, {})
@@ -112,7 +112,7 @@ class TestUpdateStaleTaskEvents(BaseTest):
         task_events = self.get_workflow_events(workflow.id)
         assert len(task_events) == 1
 
-        assert task_events[0]['user_uid'] == 'dhf8r'
+        assert task_events[0]['user_uid'] == 'xtestx'
         assert task_events[0]['task_name'] == 'Activity_ReviewAfterUpdate'
 
         self.complete_form(workflow, task, {})

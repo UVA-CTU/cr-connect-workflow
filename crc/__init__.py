@@ -61,6 +61,10 @@ from crc.api import admin
 from crc.services.workflow_service import WorkflowService
 connexion_app.add_api('api.yml', base_path='/v1.0')
 
+# Test-only endpoints; see TEST_API.md.
+if app.config['E2E_TESTING']:
+    connexion_app.add_api('test_api.yml', base_path='/v1.0/test')
+
 # needed function to avoid circular import
 def process_waiting_tasks():
     with app.app_context():

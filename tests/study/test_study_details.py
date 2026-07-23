@@ -13,7 +13,7 @@ from crc.services.workflow_processor import WorkflowProcessor
 
 
 class TestStudyDetailsScript(BaseTest):
-    test_uid = "dhf8r"
+    test_uid = "xtestx"
     test_study_id = 1
 
     def setUp(self):

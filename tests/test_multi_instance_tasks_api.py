@@ -71,7 +71,7 @@ class TestMultiinstanceTasksApi(BaseTest):
             json_data['user_id'] = user.uid
             workflow_api = WorkflowApiSchema().load(json_data)
             data = workflow_api.next_task.data
-            data['investigator']['email'] = "dhf8r@virginia.edu"
+            data['investigator']['email'] = "xtestx@virginia.edu"
             self.complete_form(workflow, workflow_api.next_task, data)
             #tasks = self.get_workflow_api(workflow).user_tasks
 
@@ -101,13 +101,13 @@ class TestMultiinstanceTasksApi(BaseTest):
         self.assertEqual("Primary Investigator", workflow_api.next_task.title)
 
         data = workflow_api.next_task.data
-        data['investigator']['email'] = "dhf8r@virginia.edu"
+        data['investigator']['email'] = "xtestx@virginia.edu"
         self.complete_form(workflow, workflow_api.next_task, data, update_all=True)
 
         workflow = self.get_workflow_api(workflow)
         self.assertEqual(WorkflowStatus.complete, workflow.status)
         data = workflow.next_task.data
         for key in data["StudyInfo"]["investigators"]:
-            self.assertEqual("dhf8r@virginia.edu", data["StudyInfo"]["investigators"][key]['email'])
+            self.assertEqual("xtestx@virginia.edu", data["StudyInfo"]["investigators"][key]['email'])
 
 

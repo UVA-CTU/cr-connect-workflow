@@ -84,7 +84,7 @@ Notes: {{ case.notes }}
       <bpmn:incoming>Flow_0xivass</bpmn:incoming>
       <bpmn:outgoing>Flow_16cpayc</bpmn:outgoing>
       <bpmn:script>current_user = get_current_user()
-PIApprover = ['dhf8r', 'lb3dp']
+PIApprover = ['xtestx', 'lb3dp']
 </bpmn:script>
     </bpmn:scriptTask>
   </bpmn:process>

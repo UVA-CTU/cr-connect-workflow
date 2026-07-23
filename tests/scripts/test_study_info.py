@@ -11,7 +11,7 @@ from crc.services.study_service import StudyService
 
 class TestStudyInfo(BaseTest):
 
-    test_uid = "dhf8r"
+    test_uid = "xtestx"
     test_study_id = 1
 
     def do_work(self, info_type):

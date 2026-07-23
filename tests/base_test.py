@@ -46,12 +46,12 @@ class BaseTest(unittest.TestCase):
                          "The first class to import in each test should be the base_test.py file."))
 
     auths = {}
-    test_uid = "dhf8r"
+    test_uid = "xtestx"
 
     # These users correspond to the ldap details available in our mock ldap service.
     users = [
         {
-            'uid': 'dhf8r',
+            'uid': 'xtestx',
         },
         {
             'uid': 'lb3dp',
@@ -70,7 +70,7 @@ class BaseTest(unittest.TestCase):
             'progress_status': ProgressStatus.in_progress,
             'sponsor': 'Sartography Pharmaceuticals',
             'ind_number': '1234',
-            'user_uid': 'dhf8r',
+            'user_uid': 'xtestx',
             'review_type': 2
         },
         {
@@ -81,7 +81,7 @@ class BaseTest(unittest.TestCase):
             'progress_status': ProgressStatus.in_progress,
             'sponsor': 'Makerspace & Co.',
             'ind_number': '5678',
-            'user_uid': 'dhf8r',
+            'user_uid': 'xtestx',
             'review_type': 2
         }
     ]
@@ -274,7 +274,7 @@ class BaseTest(unittest.TestCase):
         data = file.read()
         SpecFileService().update_file_data(spec, name, data)
 
-    def create_user(self, uid="dhf8r", email="daniel.h.funk@gmail.com", display_name="Hoopy Frood"):
+    def create_user(self, uid="xtestx", email="daniel.h.funk@gmail.com", display_name="Hoopy Frood"):
         user = session.query(UserModel).filter(UserModel.uid == uid).first()
         if user is None:
             ldap_user = LdapService().user_info(uid)
@@ -283,7 +283,7 @@ class BaseTest(unittest.TestCase):
             session.commit()
         return user
 
-    def create_study(self, uid="dhf8r", title="Beer consumption in the bipedal software engineer"):
+    def create_study(self, uid="xtestx", title="Beer consumption in the bipedal software engineer"):
         study = session.query(StudyModel).filter_by(user_uid=uid).filter_by(title=title).first()
         if study is None:
             user = self.create_user(uid=uid)
@@ -293,7 +293,7 @@ class BaseTest(unittest.TestCase):
             session.commit()
         return study
 
-    def create_workflow(self, dir_name, display_name=None, study=None, category_id=None, as_user="dhf8r"):
+    def create_workflow(self, dir_name, display_name=None, study=None, category_id=None, as_user="xtestx"):
         session.flush()
         spec = self.workflow_spec_service.get_spec(dir_name)
         if spec is None:
@@ -325,7 +325,7 @@ class BaseTest(unittest.TestCase):
         workflow_api = WorkflowApiSchema().load(json_data)
         return workflow_api
 
-    def get_workflow_api(self, workflow, do_engine_steps=True, user_uid="dhf8r"):
+    def get_workflow_api(self, workflow, do_engine_steps=True, user_uid="xtestx"):
         user = session.query(UserModel).filter_by(uid=user_uid).first()
         self.assertIsNotNone(user)
         url = (f'/v1.0/workflow/{workflow.id}'
@@ -334,7 +334,7 @@ class BaseTest(unittest.TestCase):
         self.assertEqual(workflow.workflow_spec_id, workflow_api.workflow_spec_id)
         return workflow_api
 
-    def restart_workflow_api(self, workflow, clear_data=False, delete_files=False, user_uid="dhf8r"):
+    def restart_workflow_api(self, workflow, clear_data=False, delete_files=False, user_uid="xtestx"):
         user = session.query(UserModel).filter_by(uid=user_uid).first()
         self.assertIsNotNone(user)
         url = (f'/v1.0/workflow/{workflow.id}/restart'
@@ -345,7 +345,7 @@ class BaseTest(unittest.TestCase):
         return workflow_api
 
     def complete_form(self, workflow_in, task_in, dict_data, update_all=False, error_code=None, terminate_loop=None,
-                      user_uid="dhf8r"):
+                      user_uid="xtestx"):
         # workflow_in should be a workflow, not a workflow_api
         # we were passing in workflow_api in many of our tests, and
         # this caused problems testing standalone workflows

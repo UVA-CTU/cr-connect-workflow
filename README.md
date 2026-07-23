@@ -208,6 +208,8 @@ Try 'flask validate-all --help' for help.
 ## Documentation
 Additional Documentation is available on [ReadTheDocs](https://cr-connect-workflow.readthedocs.io/en/latest/#)
 
+See [TEST_API.md](TEST_API.md) for the test-only OpenAPI spec (`crc/test_api.yml`) that's mounted alongside the main API when `TESTING` is enabled.
+
 ## Manual Sync
 You can move all the BPMN diagrams from one system to another (upgrading and replacing as needed)  This is how
 we will transfer files from staging to production. 

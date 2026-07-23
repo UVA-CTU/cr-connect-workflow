@@ -76,11 +76,11 @@ class TestEmailScript(BaseTest):
         workflow = self.create_workflow('email_script')
         workflow_api = self.get_workflow_api(workflow)
 
-        # Only dhf8r is in testing DB.
+        # Only xtestx is in testing DB.
         # We want to test multiple associates, and lb3dp is already in testing LDAP
         self.create_user(uid='lb3dp', email='lb3dp@virginia.edu', display_name='Laura Barnes')
         StudyService.update_study_associates(workflow.study_id,
-                                             [{'uid': 'dhf8r', 'role': 'Chief Bee Keeper', 'send_email': True, 'access': True},
+                                             [{'uid': 'xtestx', 'role': 'Chief Bee Keeper', 'send_email': True, 'access': True},
                                               {'uid': 'lb3dp', 'role': 'Chief Cat Herder', 'send_email': True, 'access': True}])
 
         first_task = workflow_api.next_task
@@ -89,7 +89,7 @@ class TestEmailScript(BaseTest):
             self.complete_form(workflow, first_task, {'subject': 'My Test Subject', 'recipients': ['user@example.com', 'associated']})
 
             self.assertEqual(1, len(outbox))
-            self.assertIn(outbox[0].recipients[0], ['user@example.com', 'dhf8r@virginia.edu', 'lb3dp@virginia.edu'])
-            self.assertIn(outbox[0].recipients[1], ['user@example.com', 'dhf8r@virginia.edu', 'lb3dp@virginia.edu'])
-            self.assertIn(outbox[0].recipients[2], ['user@example.com', 'dhf8r@virginia.edu', 'lb3dp@virginia.edu'])
+            self.assertIn(outbox[0].recipients[0], ['user@example.com', 'xtestx@virginia.edu', 'lb3dp@virginia.edu'])
+            self.assertIn(outbox[0].recipients[1], ['user@example.com', 'xtestx@virginia.edu', 'lb3dp@virginia.edu'])
+            self.assertIn(outbox[0].recipients[2], ['user@example.com', 'xtestx@virginia.edu', 'lb3dp@virginia.edu'])
 

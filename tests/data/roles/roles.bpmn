@@ -26,7 +26,7 @@
           <camunda:formField id="favorite_color" label="'What is your favorite color?'"  type="string" defaultValue="&#39;Yellow&#39;" />
           <camunda:formField id="quest" label="'What is your quest?'"  type="string" defaultValue="&#39;To seek the holly Grail!&#39;" />
           <camunda:formField id="swallow_speed" label="'What is the air speed velocity of an unladen swallow?'"  type="string" defaultValue="&#39;About 24 miles per hour&#39;" />
-          <camunda:formField id="supervisor" label="'Please enter the UVA Id of your supervisor'"  type="string" defaultValue="&#39;dhf8r&#39;" />
+          <camunda:formField id="supervisor" label="'Please enter the UVA Id of your supervisor'"  type="string" defaultValue="&#39;xtestx&#39;" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0a7090c</bpmn:incoming>

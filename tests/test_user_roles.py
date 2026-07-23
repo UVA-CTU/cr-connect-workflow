@@ -137,7 +137,7 @@ class TestUserRoles(BaseTest):
         self.assertEqual('LOCKED', nav[2].state)  # Second item is locked, it is the review and doesn't belong to this user.
         # In the event the next task is locked, we should say something sensible here.
         # It is possible to look at the role of the task, and say The next task "TASK TITLE" will
-        # be handled by 'dhf8r', who is full-filling the role of supervisor. the Task Data
+        # be handled by 'xtestx', who is full-filling the role of supervisor. the Task Data
         # is guaranteed to have a supervisor attribute in it that will contain the users uid, which
         # could be looked up through an ldap service.
         self.assertEqual('supervisor', workflow_api.next_task.lane)

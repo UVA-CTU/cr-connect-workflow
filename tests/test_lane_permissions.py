@@ -9,10 +9,10 @@ class TestLanePermissions(BaseTest):
     def test_can_has_permissions(self):
         """The workflow has a lane named `Reviewer`
            lb3dp is assigned to the Reviewer lane
-           dhf8r is an admin account
+           xtestx is an admin account
            start the workflow with lje5u"""
 
-        self.add_users()  # This adds dhf8r and lb3dp
+        self.add_users()  # This adds xtestx and lb3dp
         # We need a third user
         self.create_user(uid="lje5u", email="test_user@example.com", display_name="Test User")
 
@@ -65,7 +65,7 @@ class TestLanePermissions(BaseTest):
 
         # Admin accounts do not override task permission, still denied
         workflow_api = self.complete_form(workflow, third_task, {},
-                                          user_uid='dhf8r',
+                                          user_uid='xtestx',
                                           error_code='permission_denied')
         self.assertIsNone(workflow_api)
         self.assertTrue(UserService.user_is_admin())

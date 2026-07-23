@@ -9,11 +9,11 @@ class TestLdapApi(BaseTest):
         """
         Test to make sure that LDAP api returns a real user
         """
-        rv = self.app.get('/v1.0/ldap?query=dhf8r',
+        rv = self.app.get('/v1.0/ldap?query=xtestx',
                           follow_redirects=True,
                           content_type="application/json", headers=self.logged_in_headers())
         self.assertTrue(rv.status_code == 200)
-        user_uid = "dhf8r"
+        user_uid = "xtestx"
         data = json.loads(rv.data)
         self.assertEqual(data[0]['uid'], user_uid)
         self.assertEqual(data[0]['display_name'], 'Dan Funk')
