@@ -1,46 +1,6 @@
 {
   "entries": [
     {
-      "dn": "uid=test1,ou=People,o=University of Virginia,c=US",
-      "raw": {
-        "cn": [
-          "Test One (test1)"
-        ],
-        "displayName": [
-          "Test One"
-        ],
-        "givenName": [
-          "Test"
-        ],
-        "mail": [
-          "test1@virginia.edu"
-        ],
-        "objectClass": [
-          "top",
-          "person",
-          "organizationalPerson",
-          "inetOrgPerson",
-          "uvaPerson",
-          "uidObject"
-        ],
-        "telephoneNumber": [
-          "+1 (434) 924-1723"
-        ],
-        "title": [
-          "E42:Test Researcher"
-        ],
-        "uvaDisplayDepartment": [
-          "E0:EN-Eng Test Department"
-        ],
-        "uvaPersonIAMAffiliation": [
-          "faculty"
-        ],
-        "uvaPersonSponsoredType": [
-          "Staff"
-        ]
-      }
-    },
-    {
       "dn": "uid=lb3dp,ou=People,o=University of Virginia,c=US",
       "raw": {
         "cn": [
