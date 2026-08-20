@@ -6,7 +6,7 @@ import pytz
 from SpiffWorkflow.bpmn.PythonScriptEngine import PythonScriptEngine
 from SpiffWorkflow.bpmn.serializer.workflow import BpmnWorkflowSerializer
 from SpiffWorkflow.bpmn.specs.events.EndEvent import EndEvent
-from SpiffWorkflow.bpmn.specs.events.event_definitions import SignalEventDefinition
+from SpiffWorkflow.bpmn.specs.events.event_definitions import SignalEventDefinition, TimerEventDefinition
 from SpiffWorkflow.camunda.serializer.task_spec_converters import UserTaskConverter
 from SpiffWorkflow.dmn.serializer.task_spec_converters import BusinessRuleTaskConverter
 from SpiffWorkflow.serializer.exceptions import MissingSpecError
@@ -246,6 +246,53 @@ class WorkflowProcessor(object):
                                    "due to a mis-placed or missing task '%s'" %
                                    (workflow_model.workflow_spec_id, str(ke)))
 
+    def next_due_time(self):
+        """The earliest time any waiting timer on this workflow comes due, or None.
+
+        None means "due now" -- do_waiting() processes it on the next pass.  Any timer we
+        can't resolve to an absolute time returns None on purpose: running a workflow early
+        costs a deserialize, running it late stalls it silently.  Only TimerEventDefinition
+        is handled; CycleTimerEventDefinition manages its own repeat state, so it stays
+        always-due.
+        """
+        due_times = []
+        for task in self.bpmn_workflow.get_tasks(TaskState.WAITING):
+            event_definition = getattr(task.task_spec, 'event_definition', None)
+            if not isinstance(event_definition, TimerEventDefinition):
+                continue
+            due = self._timer_due_time(task, event_definition)
+            if due is None:
+                return None
+            due_times.append(due)
+        return min(due_times) if due_times else None
+
+    @staticmethod
+    def _timer_due_time(task, event_definition):
+        """Absolute, timezone-aware due time for a waiting timer task, or None if unknown.
+
+        Mirrors the shapes TimerEventDefinition.has_fired() accepts.  has_fired() evaluates
+        the expression but only returns a bool, so we evaluate it again here.
+        """
+        try:
+            dt = task.workflow.script_engine.evaluate(task, event_definition.dateTime)
+        except Exception:
+            return None  # a timer we can't evaluate is due now
+
+        if isinstance(dt, datetime.timedelta):
+            start_time = task._get_internal_data('start_time', None)
+            if start_time is None:
+                return None  # timer hasn't started; has_fired() will start it
+            due = datetime.datetime.strptime(start_time, event_definition.TIME_FORMAT) + dt
+        elif isinstance(dt, datetime.datetime):
+            due = dt
+        elif isinstance(dt, datetime.date):
+            due = datetime.datetime.combine(dt, datetime.time.min)
+        else:
+            return None
+
+        # Spiff builds these from datetime.now(), so naive values are local time.
+        return due.astimezone() if due.tzinfo is None else due
+
     def save(self):
         """Saves the current state of this processor to the database """
         self.workflow_model.bpmn_workflow_json = self.serialize()
@@ -255,6 +302,7 @@ class WorkflowProcessor(object):
         self.workflow_model.total_tasks = len(tasks)
         self.workflow_model.completed_tasks = sum(1 for t in tasks if t.state in complete_states)
         self.workflow_model.last_updated = datetime.datetime.utcnow()
+        self.workflow_model.next_due = self.next_due_time()
         session.add(self.workflow_model)
         session.commit()
 
