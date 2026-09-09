@@ -4,7 +4,7 @@ import random
 import string
 import sys
 import traceback
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 
 import jinja2
@@ -21,6 +21,7 @@ from SpiffWorkflow.bpmn.exceptions import WorkflowTaskExecException
 from SpiffWorkflow.specs import CancelTask, StartTask
 from SpiffWorkflow.util.deep_merge import DeepMerge
 from sentry_sdk import capture_message, push_scope
+from sqlalchemy import or_
 from sqlalchemy.exc import InvalidRequestError
 
 from crc import db, app, session
@@ -130,10 +131,13 @@ class WorkflowService():
         #                   "timer_event",
         #                   "timer_event_error")
         # workflow_filter = irb_status_checks + timer_event_workflows + test_workflows
+        # next_due is the earliest a workflow's timers can fire; NULL means "due now",
+        # so rows written before that column existed are picked up as they always were.
+        now = datetime.now(timezone.utc)
         records = (db.session.query(WorkflowModel).
                    # filter(WorkflowModel.workflow_spec_id.in_(workflow_filter)).
                    filter(WorkflowModel.status == WorkflowStatus.waiting).
-                   filter(WorkflowModel.state.in_(['required','optional'])).
+                   filter(or_(WorkflowModel.next_due.is_(None), WorkflowModel.next_due <= now)).
                    all())
         for workflow_model in records:
             try:

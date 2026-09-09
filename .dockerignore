@@ -1,0 +1,62 @@
+# Files excluded from the Docker build context.
+# The Dockerfile ends with `COPY . /app/`, so anything not listed here
+# ends up inside the image.
+
+# Version control
+.git
+.gitignore
+.github
+
+# Local secrets and machine-specific config
+# instance/config.py holds local overrides and would shadow config/default.py
+.env
+instance/
+
+# Logs and local runtime data
+*.log
+*.db
+postgres/var/
+
+# Python build and cache artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+.eggs/
+build/
+dist/
+.Python
+
+# Test and coverage artifacts
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+
+# Virtualenvs (dependencies are installed inside the image by pipenv)
+.venv/
+venv/
+
+# Editor and OS cruft
+.idea/
+.vscode/
+.DS_Store
+**/.DS_Store
+*.swp
+.~lock.*
+
+# Claude Code local config
+.claude/
+CLAUDE.md
+RESUME.md
+STATUS.md
+
+# Docs and readme assets
+docs/
+readme_images/
+/*.md

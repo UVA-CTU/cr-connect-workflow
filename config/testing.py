@@ -36,3 +36,5 @@ SYNC_FILE_ROOT = 'tests/SPECS'
 GIT_BRANCH = 'my_testing_branch'
 
 PB_MIN_DATE = "2020-01-01T00:00:00.000Z"
+
+MAIL_SUPPRESS_SEND = True

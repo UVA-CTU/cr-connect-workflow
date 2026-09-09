@@ -118,3 +118,4 @@ class WorkflowModel(db.Model):
     user_id = db.Column(db.String, default=None)
     state = db.Column(db.String, nullable=True)
     state_message = db.Column(db.String, nullable=True)
+    next_due = db.Column(db.DateTime(timezone=True), nullable=True)
