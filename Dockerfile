@@ -1,13 +1,13 @@
-FROM ghcr.io/sartography/python:3.9
+FROM python:3.9-slim-bookworm
 
 RUN pip install pipenv
 RUN useradd _gunicorn --no-create-home --user-group
 
+# gunicorn comes from the Pipfile, not apt.
 RUN apt-get update && \
     apt-get install -y -q \
         gcc libssl-dev \
-        curl postgresql-client git-core \
-        gunicorn3 postgresql-client
+        curl postgresql-client git-core
 
 WORKDIR /app
 COPY Pipfile Pipfile.lock /app/

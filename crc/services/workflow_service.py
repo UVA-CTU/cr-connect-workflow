@@ -155,7 +155,20 @@ class WorkflowService():
                     f"Error running waiting task "
                     f"for workflow #{workflow_model.id} ({workflow_model.workflow_spec_id}) "
                     f"for study #{workflow_model.study_id}.  \n"
-                    f"{str(e)}")
+                    f"{str(e)}"
+                    f"{WorkflowService.__task_error_details(e)}")
+
+    @staticmethod
+    def __task_error_details(e):
+        """These workflows have no user tasks, so the log is the only place Spiff's detail about
+           which task failed, and how it was reached, can surface."""
+        if not isinstance(e, WorkflowTaskExecException):
+            return ""
+        details = f"\nTask: {e.task.task_spec.description} ({e.task.task_spec.name})" \
+                  f"\n{e.exception.__class__.__name__} on line {e.line_number}: {e.error_line}"
+        if e.task_trace:
+            details += "\nTask trace: " + " -> ".join(e.task_trace)
+        return details
 
     @staticmethod
     def __get_failing_workflows():

@@ -49,21 +49,34 @@ class TaskLogModelSchema(ma.Schema):
     category = marshmallow.fields.Method('get_category')
     workflow = marshmallow.fields.Method('get_workflow')
 
-    @staticmethod
-    def get_category(obj):
-        if hasattr(obj, 'workflow_spec_id') and obj.workflow_spec_id is not None:
-            workflow_spec = WorkflowSpecService().get_spec(obj.workflow_spec_id)
-            if workflow_spec:
-                category = WorkflowSpecService().get_category(workflow_spec.category_id)
-                if category:
-                    return category.display_name
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Specs and categories live on the file system, and scanning for one is expensive.
+        # A study's logs reference only a handful of specs, so look each one up once per dump.
+        self.spec_cache = {}
+        self.category_cache = {}
 
-    @staticmethod
-    def get_workflow(obj):
-        if hasattr(obj, 'workflow_spec_id') and obj.workflow_spec_id is not None:
-            workflow_spec = WorkflowSpecService().get_spec(obj.workflow_spec_id)
-            if workflow_spec:
-                return workflow_spec.display_name
+    def get_spec(self, obj):
+        if not hasattr(obj, 'workflow_spec_id') or obj.workflow_spec_id is None:
+            return None
+        if obj.workflow_spec_id not in self.spec_cache:
+            self.spec_cache[obj.workflow_spec_id] = WorkflowSpecService().get_spec(obj.workflow_spec_id)
+        return self.spec_cache[obj.workflow_spec_id]
+
+    def get_category(self, obj):
+        workflow_spec = self.get_spec(obj)
+        if workflow_spec:
+            if workflow_spec.category_id not in self.category_cache:
+                self.category_cache[workflow_spec.category_id] = \
+                    WorkflowSpecService().get_category(workflow_spec.category_id)
+            category = self.category_cache[workflow_spec.category_id]
+            if category:
+                return category.display_name
+
+    def get_workflow(self, obj):
+        workflow_spec = self.get_spec(obj)
+        if workflow_spec:
+            return workflow_spec.display_name
 
 
 class TaskLogQuery:
