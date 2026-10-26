@@ -22,7 +22,7 @@ class ApiError(Exception):
             task_trace = {}
         self.status_code = status_code
         self.code = code  # a short consistent string describing the error.
-        self.message = message  # A detailed message that provides more information.
+        self.message = message or ""  # A detailed message that provides more information.
         self.task_id = task_id or ""  # OPTIONAL:  The id of the task in the BPMN Diagram.
         self.task_name = task_name or ""  # OPTIONAL: The name of the task in the BPMN Diagram.
         self.file_name = file_name or ""  # OPTIONAL: The file that caused the error.
