@@ -151,12 +151,18 @@ class WorkflowService():
                 workflow_model.status = WorkflowStatus.erroring
                 db.session.add(workflow_model)
                 db.session.commit()
-                app.logger.error(
-                    f"Error running waiting task "
-                    f"for workflow #{workflow_model.id} ({workflow_model.workflow_spec_id}) "
-                    f"for study #{workflow_model.study_id}.  \n"
-                    f"{str(e)}"
-                    f"{WorkflowService.__task_error_details(e)}")
+                error_message = (f"Error running waiting task "
+                                 f"for workflow #{workflow_model.id} ({workflow_model.workflow_spec_id}) "
+                                 f"for study #{workflow_model.study_id}.  \n"
+                                 f"{str(e)}"
+                                 f"{WorkflowService.__task_error_details(e)}")
+                app.logger.error(error_message)
+                # A failed email must not stop the remaining waiting workflows from being processed
+                try:
+                    WorkflowService.__send_message(app.config['CRC_SYSTEM_ADMIN_EMAIL'],
+                                                   error_message, "Failing CRC Workflow")
+                except Exception as email_error:
+                    app.logger.error(f"Unable to email failing workflow #{workflow_model.id}: {email_error}")
 
     @staticmethod
     def __task_error_details(e):
