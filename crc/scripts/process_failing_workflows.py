@@ -1,4 +1,4 @@
-from crc import app, session
+from crc import app, scheduler, session
 from crc.api.workflow import restart_workflow
 from crc.scripts.script import Script
 from crc.services.workflow_service import WorkflowService
@@ -34,8 +34,20 @@ class ProcessFailingWorkflows(Script):
             failing_workflow_url_links.append(failing_workflow_url_link)
         return failing_workflow_ids, failing_workflow_url_links
 
+    @staticmethod
+    def _restart_workflows(workflow_ids):
+        """Runs as a background job, so a long list of restarts doesn't hit the request timeout."""
+        with app.app_context():
+            for workflow_id in workflow_ids:
+                try:
+                    restart_workflow(workflow_id, clear_data=False)
+                    app.logger.info(f"Restarted workflow {workflow_id}")
+                except Exception as e:
+                    session.rollback()
+                    app.logger.error(f"Failed to restart workflow {workflow_id}: {e}")
+
     def do_task(self, task, study_id, workflow_id, *args, **kwargs):
-        """Return a list of failing workflows. Restart the workflows if requested."""
+        """Return a list of failing workflows. Restart the workflows in the background if requested."""
         mode = kwargs.get('mode', None)
         if mode is not None:
             failing_workflows = (
@@ -50,19 +62,5 @@ class ProcessFailingWorkflows(Script):
                 return failing_workflow_url_links
 
             if mode == 'restart':
-                restart_errors = []
-                for failing_workflow_id in failing_workflow_ids:
-                    try:
-                        restart_workflow(failing_workflow_id, clear_data=False)
-                    except Exception as e:
-                        error_message = f"Failed to restart workflow {failing_workflow_id}: {e}"
-                        print(error_message)
-                        restart_errors.append(error_message)
-                    finally:
-                        print(f"Restarted workflow {failing_workflow_id}")
-                remaining_failing_workflows = (
-                    session.query(WorkflowModel).
-                    filter(WorkflowModel.status == WorkflowStatus.erroring).
-                    all()
-                )
-                return restart_errors, remaining_failing_workflows
+                scheduler.add_job(self._restart_workflows, args=[failing_workflow_ids])
+                return failing_workflow_url_links
