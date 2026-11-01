@@ -123,6 +123,6 @@ MAIL_SUPPRESS_SEND = environ.get('MAIL_SUPPRESS_SEND', default="false") == "true
 SYNC_FILE_ROOT = environ.get('SYNC_FILE_ROOT', default='tests/data/IMPORT_TEST')
 
 # Turn on/off processing waiting tasks
-PROCESS_WAITING_TASKS = environ.get('PROCESS_WAITING_TASKS', default='true')
-
+PROCESS_WAITING_TASKS = environ.get('PROCESS_WAITING_TASKS', default='true') == 'true'
+# Toggle time_it for debugging
 CAN_TIME_IT = environ.get('CAN_TIME_IT', default='false') == 'true'
